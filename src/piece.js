@@ -97,6 +97,8 @@ class Piece {
         if (this.name === 6 || this.name === -6)
             check = Move.validKingMove(this, newX, newY);
         if (check) {
+            if (Check.squareBeingAttackedByBlackPiece(newX, newY) && this.name === 6)
+                return;
             this.getPromotion(newY);
             Board.previousBoard = Functions.deepCopy(Board.pieces);
             this.hasMoved = true;
@@ -107,14 +109,11 @@ class Piece {
             FenHandling.fillBoardFromFEN(FenHandling.loadFENFromPosition(newBoard));
             this.x = newX;
             this.y = newY;
-            let king = this.getWhiteKing();
-            if (Check.squareBeingAttackedByBlackPiece(king.x, king.y))
-                alert("White King is in check");
             Black.makeMove();
         }
     }
-    getWhiteKing() {
-        for (let array of Board.pieces)
+    getWhiteKing(board) {
+        for (let array of board)
             for (let piece of array)
                 if (piece !== null)
                     if (piece.name === 6)

@@ -64,6 +64,20 @@ class Move {
             return true;
         return false;
     }
+    static validWhitePawnCapture(piece, newX, newY) {
+        if (piece.y - 1 == newY && piece.x - 1 == newX)
+            return true;
+        if (piece.y - 1 == newY && piece.x + 1 == newX)
+            return true;
+        return false;
+    }
+    static validBlackPawnCapture(piece, newX, newY) {
+        if (piece.y + 1 == newY && piece.x + 1 == newX)
+            return true;
+        if (piece.y + 1 == newY && piece.x - 1 == newX)
+            return true;
+        return false;
+    }
     // Special thanks to Sam Protsenko at https://stackoverflow.com/questions/30007666/programming-chess-rook-movement
     static validRookMove(piece, newX, newY) {
         if (piece.x !== newX && piece.y !== newY)

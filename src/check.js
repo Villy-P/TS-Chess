@@ -1,48 +1,55 @@
 "use strict";
 class Check {
     static squareBeingAttackedByBlackPiece(squareX, squareY) {
-        // Pawns
-        if (squareX !== 0 && squareY !== 0)
-            if (Board.pieces[squareY - 1][squareX - 1] != null)
-                if (Board.pieces[squareY - 1][squareX - 1].name == -1)
-                    return true;
-        if (squareX !== 7 && squareY !== 0)
-            if (Board.pieces[squareY - 1][squareX + 1] != null)
-                if (Board.pieces[squareY - 1][squareX + 1].name == -1)
-                    return true;
-        // Knight
-        if (squareY > 1 && squareX !== 7)
-            if (squareY > 1 && squareX !== 7 && Board.pieces[squareY - 2][squareX + 1] != null)
-                if (Board.pieces[squareY - 2][squareX + 1].name == -2)
-                    return true;
-        if (squareY > 1 && squareX !== 0)
-            if (Board.pieces[squareY - 2][squareX - 1] != null)
-                if (Board.pieces[squareY - 2][squareX - 1].name == -2)
-                    return true;
-        if (squareY < 6 && squareX !== 0)
-            if (Board.pieces[squareY + 2][squareX - 1] != null)
-                if (Board.pieces[squareY + 2][squareX + 1].name == -2)
-                    return true;
-        if (squareY < 6 && squareX !== 7)
-            if (Board.pieces[squareY + 2][squareX + 1] != null)
-                if (Board.pieces[squareY + 2][squareX + 1].name == -2)
-                    return true;
-        if (squareY < 7 && squareX < 6)
-            if (Board.pieces[squareY + 1][squareX + 2] != null)
-                if (Board.pieces[squareY + 1][squareX + 2].name == -2)
-                    return true;
-        if (squareY !== 0 && squareX !== 7)
-            if (Board.pieces[squareY - 1][squareX + 2] != null)
-                if (Board.pieces[squareY - 1][squareX + 2].name == -2)
-                    return true;
-        if (squareY !== 7 && squareX > 1)
-            if (Board.pieces[squareY + 1][squareX - 2] != null)
-                if (Board.pieces[squareY + 1][squareX - 2].name == -2)
-                    return true;
-        if (squareY !== 0 && squareX > 1)
-            if (Board.pieces[squareY - 1][squareX - 2] != null)
-                if (Board.pieces[squareY - 1][squareX - 2].name == -2)
-                    return true;
+        for (const array of Board.pieces)
+            for (const piece of array)
+                if (piece != null)
+                    if (piece.name < 0) {
+                        if (piece.name === -1)
+                            if (Move.validBlackPawnCapture(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === -2)
+                            if (Move.validKnightMove(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === -3)
+                            if (Move.validBishopMove(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === -4)
+                            if (Move.validRookMove(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === -5)
+                            if (Move.validQueenMove(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === -6)
+                            if (Move.validKingMove(piece, squareX, squareY))
+                                return true;
+                    }
+        return false;
+    }
+    static squareBeingAttackedByWhitePiece(squareX, squareY) {
+        for (const array of Board.pieces)
+            for (const piece of array)
+                if (piece != null)
+                    if (piece.name > 0) {
+                        if (piece.name === 1)
+                            if (Move.validWhitePawnCapture(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === 2)
+                            if (Move.validKnightMove(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === 3)
+                            if (Move.validBishopMove(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === 4)
+                            if (Move.validRookMove(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === 5)
+                            if (Move.validQueenMove(piece, squareX, squareY))
+                                return true;
+                        if (piece.name === 6)
+                            if (Move.validKingMove(piece, squareX, squareY))
+                                return true;
+                    }
         return false;
     }
 }
