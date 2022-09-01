@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "fen-chess-board": "^2.0.5"
+  }
+}
