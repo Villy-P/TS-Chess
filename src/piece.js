@@ -97,7 +97,7 @@ class Piece {
         if (this.name === 6 || this.name === -6)
             check = Move.validKingMove(this, newX, newY);
         if (check) {
-            if (Check.squareBeingAttackedByBlackPiece(newX, newY) && this.name === 6)
+            if (Check.squareBeingAttackedByBlackPiece(newX, newY, Board.pieces) && this.name === 6)
                 return;
             this.getPromotion(newY);
             Board.previousBoard = Functions.deepCopy(Board.pieces);

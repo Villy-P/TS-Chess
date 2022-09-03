@@ -9,12 +9,20 @@ class Black {
                         total++;
         return total;
     }
+    static getKing(board) {
+        for (let array of board)
+            for (let piece of array)
+                if (piece !== null)
+                    if (piece.name == -6)
+                        return piece;
+        throw new Error("King not found");
+    }
     static getPromotion(piece, newY) {
         if (newY === 7 && piece.name === -1) {
             piece.name = 5;
         }
     }
-    static makeMove() {
+    static makeMove(board = null) {
         try {
             let blackPieces = Black.getBlackPieces();
             let lookingFor = Math.floor(Math.random() * (blackPieces - 1));
@@ -61,7 +69,12 @@ class Black {
                 let newBoard = Functions.deepCopy(Board.pieces);
                 newBoard[piecePick.y][piecePick.x] = null;
                 newBoard[piecePick.y + yOffset][piecePick.x + xOffset] = piecePick;
+                let king = Black.getKing(newBoard);
                 // Board.pieces = newBoard;
+                if (Check.squareBeingAttackedByWhitePiece(king.x, king.y, Board.pieces)) {
+                    console.log(Board.pieces);
+                    Black.makeMove();
+                }
                 FenHandling.fillBoardFromFEN(FenHandling.loadFENFromPosition(newBoard));
                 piecePick.x = piecePick.x + xOffset;
                 piecePick.y = piecePick.y + yOffset;

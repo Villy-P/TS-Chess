@@ -1,6 +1,6 @@
 class Check {
-    public static squareBeingAttackedByBlackPiece(squareX: number, squareY: number): boolean {
-        for (const array of Board.pieces)
+    public static squareBeingAttackedByBlackPiece(squareX: number, squareY: number, board: (Piece|null)[][]): boolean {
+        for (const array of board)
             for (const piece of array)
                 if (piece != null)
                     if (piece.name < 0) {
@@ -28,8 +28,8 @@ class Check {
         return false
     }
 
-    public static squareBeingAttackedByWhitePiece(squareX: number, squareY: number): boolean {
-        for (const array of Board.pieces)
+    public static squareBeingAttackedByWhitePiece(squareX: number, squareY: number, board: (Piece|null)[][]): boolean {
+        for (const array of board)
             for (const piece of array)
                 if (piece != null)
                     if (piece.name > 0) {

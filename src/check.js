@@ -1,13 +1,15 @@
 "use strict";
 class Check {
-    static squareBeingAttackedByBlackPiece(squareX, squareY) {
-        for (const array of Board.pieces)
+    static squareBeingAttackedByBlackPiece(squareX, squareY, board) {
+        for (const array of board)
             for (const piece of array)
                 if (piece != null)
                     if (piece.name < 0) {
                         if (piece.name === -1)
-                            if (Move.validBlackPawnCapture(piece, squareX, squareY))
+                            if (Move.validBlackPawnCapture(piece, squareX, squareY)) {
+                                console.log("WOW");
                                 return true;
+                            }
                         if (piece.name === -2)
                             if (Move.validKnightMove(piece, squareX, squareY))
                                 return true;
@@ -26,8 +28,8 @@ class Check {
                     }
         return false;
     }
-    static squareBeingAttackedByWhitePiece(squareX, squareY) {
-        for (const array of Board.pieces)
+    static squareBeingAttackedByWhitePiece(squareX, squareY, board) {
+        for (const array of board)
             for (const piece of array)
                 if (piece != null)
                     if (piece.name > 0) {
