@@ -41,7 +41,7 @@ class Check {
         return false;
     }
     static whiteKingInCheckMate() {
-        let king = Piece.getKing(true, Board.pieces);
+        const king = Piece.getKing(true, Board.pieces);
         if (!Check.squareBeingAttackedByBlackPiece(king.x, king.y, Board.pieces))
             return false;
         for (const array of Board.pieces) {
@@ -49,11 +49,15 @@ class Check {
                 if (piece.value > 0) {
                     for (let i = 0; i < 8; i++) {
                         for (let j = 0; j < 8; j++) {
-                            if (Piece.getValidMove(piece, j, i)) {
-                                let newBoard = Functions.deepCopy(Board.pieces);
-                                newBoard[j][i] = piece;
-                                newBoard[piece.y][piece.x] = new Piece(0, piece.x, piece.y);
-                                if (!Check.squareBeingAttackedByBlackPiece(king.x, king.y, newBoard))
+                            if (Piece.getValidMove(piece, j, i) && (Board.pieces[j][i].value <= 0)) {
+                                const pieceCopy = Functions.deepCopy(piece);
+                                const newBoard = Functions.deepCopy(Board.pieces);
+                                newBoard[j][i] = pieceCopy;
+                                newBoard[pieceCopy.y][pieceCopy.x] = new Piece(0, pieceCopy.x, pieceCopy.y);
+                                pieceCopy.y = j;
+                                pieceCopy.x = i;
+                                const newKing = Piece.getKing(true, newBoard);
+                                if (!Check.squareBeingAttackedByBlackPiece(newKing.x, newKing.y, newBoard))
                                     return false;
                             }
                         }
@@ -64,7 +68,7 @@ class Check {
         return true;
     }
     static blackKingInCheckMate() {
-        let king = Piece.getKing(false, Board.pieces);
+        const king = Piece.getKing(false, Board.pieces);
         if (!Check.squareBeingAttackedByWhitePiece(king.x, king.y, Board.pieces))
             return false;
         for (const array of Board.pieces) {
@@ -79,9 +83,7 @@ class Check {
                                 newBoard[pieceCopy.y][pieceCopy.x] = new Piece(0, pieceCopy.x, pieceCopy.y);
                                 pieceCopy.y = j;
                                 pieceCopy.x = i;
-                                console.log(newBoard);
-                                let newKing = Piece.getKing(false, newBoard);
-                                console.log(Check.squareBeingAttackedByWhitePiece(newKing.x, newKing.y, newBoard));
+                                const newKing = Piece.getKing(false, newBoard);
                                 if (!Check.squareBeingAttackedByWhitePiece(newKing.x, newKing.y, newBoard))
                                     return false;
                             }
