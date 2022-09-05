@@ -1,4 +1,9 @@
 class Move {
+    public static whiteKingMoved: boolean = false;
+    public static whiteLeftRookMoved: boolean = false;
+    public static whiteRightRookMoved: boolean = false;
+    public static blackKingMoved: boolean = false;
+
     public static validWhitePawnMove(piece: Piece, newX: number, newY: number): boolean {
         if (newY !== 0 && newX !== 0) {
             if (piece.y - 1 == newY && piece.x - 1 == newX && Board.previousBoard[piece.y - 2][piece.x - 1].value != 0) {
@@ -110,6 +115,10 @@ class Move {
         } else {
             return false;
         }
+        if (piece.x == 0 && piece.y == 7)
+            Move.whiteLeftRookMoved = true;
+        if (piece.x == 7 && piece.y == 7)
+            Move.whiteRightRookMoved = true;
         return true;
     }
 
@@ -200,7 +209,35 @@ class Move {
         return Math.abs(newX - piece.x) == Math.abs(newY - piece.y);
     }
 
-    public static validKingMove(piece: Piece, newX: number, newY: number): boolean {
+    public static validWhiteKingMove(piece: Piece, newX: number, newY: number): boolean {
+        console.log(Move.whiteKingMoved)
+        console.log(Move.whiteRightRookMoved)
+        if (
+            newY === piece.y && 
+            piece.x + 2 === newX && 
+            !Move.whiteRightRookMoved && 
+            !Move.whiteKingMoved && 
+            !Check.squareBeingAttackedByBlackPiece(piece.x, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByBlackPiece(piece.x + 1, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByBlackPiece(piece.x + 2, piece.y, Board.pieces)
+        ) {
+            Move.whiteKingMoved = true;
+            Move.whiteRightRookMoved = true;
+            console.log(Board.pieces[piece.y][piece.x + 3])
+            Board.pieces[piece.y][piece.x + 1] = Board.pieces[piece.y][piece.x + 3];
+            Board.pieces[piece.y][piece.x + 1].x = piece.x + 1;
+            Board.pieces[piece.y][piece.x + 1].y = piece.y;
+            Board.pieces[piece.y][piece.x + 3] = new Piece(0, piece.x + 3, piece.y);
+            return true;
+        }
+        if (newX > piece.x + 1 || newX < piece.x - 1 || newY > piece.y + 1 || newY < piece.y - 1)
+            return false;
+        Move.whiteKingMoved = true;
+        Move.whiteRightRookMoved = true;
+        return true;
+    }
+
+    public static validBlackKingMove(piece: Piece, newX: number, newY: number): boolean {
         if (newX > piece.x + 1 || newX < piece.x - 1 || newY > piece.y + 1 || newY < piece.y - 1)
             return false;
         return true;

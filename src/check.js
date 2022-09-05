@@ -16,7 +16,7 @@ class Check {
                         case -5:
                             return Move.validQueenMove(piece, squareX, squareY);
                         case -6:
-                            return Move.validKingMove(piece, squareX, squareY);
+                            return Move.validBlackKingMove(piece, squareX, squareY);
                     }
         return false;
     }
@@ -36,7 +36,7 @@ class Check {
                         case 5:
                             return Move.validQueenMove(piece, squareX, squareY);
                         case 6:
-                            return Move.validKingMove(piece, squareX, squareY);
+                            return Move.validWhiteKingMove(piece, squareX, squareY);
                     }
         return false;
     }

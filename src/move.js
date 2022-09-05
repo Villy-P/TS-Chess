@@ -107,6 +107,10 @@ class Move {
         else {
             return false;
         }
+        if (piece.x == 0 && piece.y == 7)
+            Move.whiteLeftRookMoved = true;
+        if (piece.x == 7 && piece.y == 7)
+            Move.whiteRightRookMoved = true;
         return true;
     }
     static validKnightMove(piece, newX, newY) {
@@ -197,9 +201,38 @@ class Move {
                     return false;
         return Math.abs(newX - piece.x) == Math.abs(newY - piece.y);
     }
-    static validKingMove(piece, newX, newY) {
+    static validWhiteKingMove(piece, newX, newY) {
+        console.log(Move.whiteKingMoved);
+        console.log(Move.whiteRightRookMoved);
+        if (newY === piece.y &&
+            piece.x + 2 === newX &&
+            !Move.whiteRightRookMoved &&
+            !Move.whiteKingMoved &&
+            !Check.squareBeingAttackedByBlackPiece(piece.x, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByBlackPiece(piece.x + 1, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByBlackPiece(piece.x + 2, piece.y, Board.pieces)) {
+            Move.whiteKingMoved = true;
+            Move.whiteRightRookMoved = true;
+            console.log(Board.pieces[piece.y][piece.x + 3]);
+            Board.pieces[piece.y][piece.x + 1] = Board.pieces[piece.y][piece.x + 3];
+            Board.pieces[piece.y][piece.x + 1].x = piece.x + 1;
+            Board.pieces[piece.y][piece.x + 1].y = piece.y;
+            Board.pieces[piece.y][piece.x + 3] = new Piece(0, piece.x + 3, piece.y);
+            return true;
+        }
+        if (newX > piece.x + 1 || newX < piece.x - 1 || newY > piece.y + 1 || newY < piece.y - 1)
+            return false;
+        Move.whiteKingMoved = true;
+        Move.whiteRightRookMoved = true;
+        return true;
+    }
+    static validBlackKingMove(piece, newX, newY) {
         if (newX > piece.x + 1 || newX < piece.x - 1 || newY > piece.y + 1 || newY < piece.y - 1)
             return false;
         return true;
     }
 }
+Move.whiteKingMoved = false;
+Move.whiteLeftRookMoved = false;
+Move.whiteRightRookMoved = false;
+Move.blackKingMoved = false;
