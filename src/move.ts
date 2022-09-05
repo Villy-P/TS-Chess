@@ -217,17 +217,36 @@ class Move {
             piece.x + 2 === newX && 
             !Move.whiteRightRookMoved && 
             !Move.whiteKingMoved && 
+            Board.pieces[piece.y][piece.x + 1].value == 0 &&
             !Check.squareBeingAttackedByBlackPiece(piece.x, piece.y, Board.pieces) &&
             !Check.squareBeingAttackedByBlackPiece(piece.x + 1, piece.y, Board.pieces) &&
             !Check.squareBeingAttackedByBlackPiece(piece.x + 2, piece.y, Board.pieces)
         ) {
             Move.whiteKingMoved = true;
             Move.whiteRightRookMoved = true;
-            console.log(Board.pieces[piece.y][piece.x + 3])
             Board.pieces[piece.y][piece.x + 1] = Board.pieces[piece.y][piece.x + 3];
             Board.pieces[piece.y][piece.x + 1].x = piece.x + 1;
             Board.pieces[piece.y][piece.x + 1].y = piece.y;
             Board.pieces[piece.y][piece.x + 3] = new Piece(0, piece.x + 3, piece.y);
+            return true;
+        }
+        if (
+            newY === piece.y &&
+            piece.x - 2 === newX &&
+            !Move.whiteLeftRookMoved &&
+            !Move.whiteKingMoved &&
+            Board.pieces[piece.y][piece.x - 1].value == 0 &&
+            Board.pieces[piece.y][piece.x - 3].value == 0 &&
+            !Check.squareBeingAttackedByBlackPiece(piece.x, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByBlackPiece(piece.x - 1, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByBlackPiece(piece.x - 2, piece.y, Board.pieces)
+        ) {
+            Move.whiteKingMoved = true;
+            Move.whiteRightRookMoved = true;
+            Board.pieces[piece.y][piece.x - 1] = Board.pieces[piece.y][piece.x - 4];
+            Board.pieces[piece.y][piece.x - 1].x = piece.x - 1;
+            Board.pieces[piece.y][piece.x - 1].y = piece.y;
+            Board.pieces[piece.y][piece.x - 4] = new Piece(0, piece.x - 4, piece.y);
             return true;
         }
         if (newX > piece.x + 1 || newX < piece.x - 1 || newY > piece.y + 1 || newY < piece.y - 1)
