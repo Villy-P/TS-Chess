@@ -167,52 +167,9 @@ class Move {
 
     // Made by copying rook and bishop functions
     public static validQueenMove(piece: Piece, newX: number, newY: number): boolean {
-        if (piece.y === newY || piece.x === newX) {
-            if (piece.y === newY) {
-                if (piece.x < newX) {
-                    for (let i = piece.x + 1; i < newX; ++i) 
-                        if (Board.pieces[piece.y][i].value != 0)
-                            return false;
-                } else {
-                    for (let i = piece.x - 1; i > newX; i--)
-                        if (Board.pieces[piece.y][i].value != 0)
-                            return false;
-                }
-            } else if (piece.x === newX) {
-                if (piece.y < newY) {
-                    for (let i = piece.y + 1; i < newY; ++i)
-                        if (Board.pieces[i][piece.x].value != 0)
-                            return false;
-                } else {
-                    for (let i = piece.y - 1; i > newY; i--)
-                        if (Board.pieces[i][piece.x].value != 0)
-                            return false
-                }
-            } else {
-                return false;
-            }
+        if (Move.validBishopMove(piece, newX, newY) || Move.validRookMove(piece, newX, newY))
             return true;
-        }
-        if (newX > piece.x && newY > piece.y)
-            for (let i = 1; i < Math.max(newX - piece.x, newY - piece.y); i++)
-                if (Board.pieces[piece.y + i][piece.x + i].value != 0)
-                    return false;
-        // Up-Left
-        if (newX < piece.x && newY < piece.y)
-            for (let i = 1; i < Math.max(piece.x - newX, piece.y - newY); i++)
-                if (Board.pieces[piece.y - i][piece.x - i].value != 0)
-                    return false;
-        // Down-Left
-        if (newX < piece.x && newY > piece.y)
-            for (let i = 1; i < Math.max(piece.x - newX, newY - piece.y); i++)
-                if (Board.pieces[piece.y + i][piece.x - i].value != 0)
-                    return false;
-        // Up-Right
-        if (newX > piece.x && newY < piece.y)
-            for (let i = 1; i < Math.max(newX - piece.x, piece.y - newY); i++)
-                if (Board.pieces[piece.y - i][piece.x + i].value != 0)
-                    return false;
-        return Math.abs(newX - piece.x) == Math.abs(newY - piece.y);
+        return false;
     }
 
     public static validWhiteKingMove(piece: Piece, newX: number, newY: number): boolean {

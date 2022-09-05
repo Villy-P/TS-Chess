@@ -116,7 +116,15 @@ class Piece {
             Board.pieces[this.y][this.x] = new Piece(0, this.x, this.y);
             this.x = newX;
             this.y = newY;
+            if (Check.blackKingInCheckMate()) {
+                alert("Black King is in checkmate. White has won the game!");
+                return;
+            }
             Black.makeMove();
+            if (Check.whiteKingInCheckMate()) {
+                alert("White King is in checkmate. Black has won the game!");
+                return;
+            }
         }
     }
     static getKing(isWhite, board) {

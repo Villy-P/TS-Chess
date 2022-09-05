@@ -40,4 +40,58 @@ class Check {
                     }
         return false
     }
+
+    public static whiteKingInCheckMate(): boolean {
+        let king: Piece = Piece.getKing(true, Board.pieces);
+        if (!Check.squareBeingAttackedByBlackPiece(king.x, king.y, Board.pieces))
+            return false;
+        for (const array of Board.pieces) {
+            for (const piece of array) {
+                if (piece.value > 0) {
+                    for (let i = 0; i < 8; i++) {
+                        for (let j = 0; j < 8; j++) {
+                            if (Piece.getValidMove(piece, j, i)) {
+                                let newBoard = Functions.deepCopy(Board.pieces);
+                                newBoard[j][i] = piece;
+                                newBoard[piece.y][piece.x] = new Piece(0, piece.x, piece.y);
+                                if (!Check.squareBeingAttackedByBlackPiece(king.x, king.y, newBoard))
+                                    return false
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public static blackKingInCheckMate(): boolean {
+        let king: Piece = Piece.getKing(false, Board.pieces);
+        if (!Check.squareBeingAttackedByWhitePiece(king.x, king.y, Board.pieces))
+            return false;
+        for (const array of Board.pieces) {
+            for (const piece of array) {
+                if (piece.value < 0) {
+                    for (let i = 0; i < 8; i++) {
+                        for (let j = 0; j < 8; j++) {
+                            if (Piece.getValidMove(piece, i, j) && (Board.pieces[j][i].value >= 0)) {
+                                const pieceCopy: Piece = Functions.deepCopy(piece);
+                                const newBoard: Piece[][] = Functions.deepCopy(Board.pieces);
+                                newBoard[j][i] = pieceCopy;
+                                newBoard[pieceCopy.y][pieceCopy.x] = new Piece(0, pieceCopy.x, pieceCopy.y);
+                                pieceCopy.y = j;
+                                pieceCopy.x = i;
+                                console.log(newBoard);
+                                let newKing: Piece = Piece.getKing(false, newBoard);
+                                console.log(Check.squareBeingAttackedByWhitePiece(newKing.x, newKing.y, newBoard))
+                                if (!Check.squareBeingAttackedByWhitePiece(newKing.x, newKing.y, newBoard))
+                                    return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }
