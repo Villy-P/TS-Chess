@@ -30,7 +30,7 @@ class FenHandling {
         for (const array of board) {
             let emptySquares = 0;
             for (const piece of array) {
-                if (piece == undefined) {
+                if (piece.value === 0) {
                     emptySquares++;
                 }
                 else {
@@ -38,9 +38,8 @@ class FenHandling {
                         fen += emptySquares;
                         emptySquares = 0;
                     }
-                    let pieceString = Piece.numberToStringPieceIdentifier.get(piece.name);
-                    if (pieceString != 'x')
-                        fen += Piece.numberToStringPieceIdentifier.get(piece.name);
+                    if (piece.value != 0)
+                        fen += piece.value.toString();
                 }
             }
             if (emptySquares != 0)

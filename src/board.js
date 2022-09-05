@@ -1,21 +1,13 @@
 "use strict";
 class Board {
-    constructor(color) {
-        this.color = color;
+    constructor() {
         FenHandling.fillBoardFromFEN(FenHandling.startWhiteFenString);
     }
     static createEmptyBoard() {
         for (let i = 0; i < 8; i++) {
-            Board.pieces.push([
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            ]);
+            Board.pieces.push([]);
+            for (let j = 0; j < 8; j++)
+                Board.pieces[i].push(new Piece(0, i, j));
         }
     }
     drawNumbers(i, sideNumber) {
@@ -46,11 +38,10 @@ class Board {
         for (let file = 0; file < 8; file++) {
             for (let rank = 0; rank < 8; rank++) {
                 const piece = Board.pieces[rank][file];
-                if (piece !== null)
-                    Functions.drawImage(Piece.getImageUrlFromFEN(piece.name), (piece.x * (DevSettings.numberLetterDimensions + 1)) + DevSettings.numberLetterDimensions + piece.dx, (piece.y * (DevSettings.numberLetterDimensions + 1)) + DevSettings.numberLetterDimensions + piece.dy, DevSettings.pieceDimensions, DevSettings.pieceDimensions);
+                if (piece.value !== 0)
+                    Functions.drawImage(Piece.getImageUrlFromFEN(piece.value), (piece.x * (DevSettings.numberLetterDimensions + 1)) + DevSettings.numberLetterDimensions + piece.dx, (piece.y * (DevSettings.numberLetterDimensions + 1)) + DevSettings.numberLetterDimensions + piece.dy, DevSettings.pieceDimensions, DevSettings.pieceDimensions);
             }
         }
     }
 }
 Board.pieces = [];
-Board.board = [];

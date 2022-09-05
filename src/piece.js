@@ -1,11 +1,11 @@
 "use strict";
 class Piece {
-    constructor(name, x, y) {
+    constructor(value, x, y) {
         this.dx = 0;
         this.dy = 0;
         this.hasMoved = false;
         this.selected = false;
-        this.name = name;
+        this.value = value;
         this.x = x;
         this.y = y;
     }
@@ -52,25 +52,50 @@ class Piece {
         return url + ".png";
     }
     getPromotion(newY) {
-        if (newY === 0 && this.name === 1) {
+        if (newY === 0 && this.value === 1) {
             let input = prompt("Enter promotion value: (q)ueen, (r)ook, (k)night, (b)ishop (Default is Queen)");
             if (input === null)
-                this.name = 5;
+                this.value = 5;
             else {
                 let trueInput = input.toLowerCase();
                 if (trueInput === 'r')
-                    this.name = 4;
+                    this.value = 4;
                 else if (trueInput === 'b')
-                    this.name = 3;
+                    this.value = 3;
                 else if (trueInput === 'k')
-                    this.name = 2;
+                    this.value = 2;
                 else
-                    this.name = 5;
+                    this.value = 5;
             }
         }
     }
+    static getValidMove(piece, newX, newY) {
+        switch (piece.value) {
+            case 0:
+                return false;
+            case -1:
+                return Move.validBlackPawnMove(piece, newX, newY);
+            case 1:
+                return Move.validWhitePawnMove(piece, newX, newY);
+            case 2:
+            case -2:
+                return Move.validKnightMove(piece, newX, newY);
+            case 3:
+            case -3:
+                return Move.validBishopMove(piece, newX, newY);
+            case 4:
+            case -4:
+                return Move.validRookMove(piece, newX, newY);
+            case 5:
+            case -5:
+                return Move.validQueenMove(piece, newX, newY);
+            case 6:
+            case -6:
+                return Move.validKingMove(piece, newX, newY);
+        }
+        throw new Error("Pieces value is undefined");
+    }
     move(e) {
-        console.log(World.isWhiteTurn);
         this.selected = false;
         let newX = Math.floor(Functions.getMousePos(e).x / DevSettings.boxDimensions) - 1;
         let newY = Math.floor(Functions.getMousePos(e).y / DevSettings.boxDimensions) - 1;
@@ -78,47 +103,29 @@ class Piece {
         this.dy = 0;
         if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
             return;
-        if (Board.pieces[newY][newX] !== null)
-            if (Board.pieces[newY][newX].name > 0)
-                return;
-        let check = true;
-        if (this.name === -1)
-            check = Move.validBlackPawnMove(this, newX, newY);
-        if (this.name === 1)
-            check = Move.validWhitePawnMove(this, newX, newY);
-        if (this.name === 2 || this.name === -2)
-            check = Move.validKnightMove(this, newX, newY);
-        if (this.name === 3 || this.name === -3)
-            check = Move.validBishopMove(this, newX, newY);
-        if (this.name === 4 || this.name === -4)
-            check = Move.validRookMove(this, newX, newY);
-        if (this.name === 5 || this.name === -5)
-            check = Move.validQueenMove(this, newX, newY);
-        if (this.name === 6 || this.name === -6)
-            check = Move.validKingMove(this, newX, newY);
+        if (Board.pieces[newY][newX].value > 0)
+            return;
+        let check = Piece.getValidMove(this, newX, newY);
         if (check) {
-            if (Check.squareBeingAttackedByBlackPiece(newX, newY, Board.pieces) && this.name === 6)
+            if (Check.squareBeingAttackedByBlackPiece(newX, newY, Board.pieces) && this.value === 6)
                 return;
             this.getPromotion(newY);
             Board.previousBoard = Functions.deepCopy(Board.pieces);
             this.hasMoved = true;
-            let newBoard = Functions.deepCopy(Board.pieces);
-            newBoard[this.y][this.x] = null;
-            newBoard[newY][newX] = this;
-            // Board.pieces = newBoard;
-            FenHandling.fillBoardFromFEN(FenHandling.loadFENFromPosition(newBoard));
+            Board.pieces[newY][newX] = this;
+            Board.pieces[this.y][this.x] = new Piece(0, this.x, this.y);
             this.x = newX;
             this.y = newY;
             Black.makeMove();
         }
     }
-    getWhiteKing(board) {
+    static getKing(isWhite, board) {
+        let kingColor = isWhite ? 6 : -6;
         for (let array of board)
             for (let piece of array)
-                if (piece !== null)
-                    if (piece.name === 6)
-                        return piece;
-        throw new Error("White King not found");
+                if (piece.value === kingColor)
+                    return piece;
+        throw new Error("King not found");
     }
 }
 Piece.pieceIdentifiers = new Map([
@@ -135,19 +142,4 @@ Piece.pieceIdentifiers = new Map([
     ['R', 4],
     ['Q', 5],
     ['K', 6]
-]);
-Piece.numberToStringPieceIdentifier = new Map([
-    [0, 'x'],
-    [-1, 'p'],
-    [-2, 'n'],
-    [-3, 'b'],
-    [-4, 'r'],
-    [-5, 'q'],
-    [-6, 'k'],
-    [1, 'P'],
-    [2, 'N'],
-    [3, 'B'],
-    [4, 'R'],
-    [5, 'Q'],
-    [6, 'K'],
 ]);

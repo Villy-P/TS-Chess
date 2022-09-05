@@ -26,21 +26,20 @@ class FenHandling {
         }
     }
 
-    public static loadFENFromPosition(board: (Piece|null)[][]): string {
+    public static loadFENFromPosition(board: Piece[][]): string {
         let fen: string = "";
         for (const array of board) {
             let emptySquares: number = 0;
             for (const piece of array) {
-                if (piece == undefined) {
+                if (piece.value === 0) {
                     emptySquares++;
                 } else {
                     if (emptySquares != 0) {
                         fen += emptySquares;
                         emptySquares = 0;
                     }
-                    let pieceString: string = Piece.numberToStringPieceIdentifier.get(piece.name)!;
-                    if (pieceString != 'x')
-                        fen += Piece.numberToStringPieceIdentifier.get(piece.name);
+                    if (piece.value != 0)
+                        fen += piece.value.toString();
                 }
             }
             if (emptySquares != 0)

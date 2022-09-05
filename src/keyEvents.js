@@ -7,16 +7,13 @@ class KeyEvents {
         this.lastY = Functions.getMousePos(e).y;
         const mouseX = Math.floor(Functions.getMousePos(e).x / DevSettings.boxDimensions) - 1;
         const mouseY = Math.floor(Functions.getMousePos(e).y / DevSettings.boxDimensions) - 1;
-        dance: for (let file = 0; file < 8; file++) {
-            for (let rank = 0; rank < 8; rank++) {
+        dance: for (let file = 0; file < 8; file++)
+            for (let rank = 0; rank < 8; rank++)
                 if (file == mouseX && rank == mouseY) {
-                    if (Board.pieces[rank][file] !== null)
-                        if (Board.pieces[rank][file].name > 0)
-                            this.selectedPiece = Board.pieces[rank][file];
+                    if (Board.pieces[rank][file].value > 0)
+                        this.selectedPiece = Board.pieces[rank][file];
                     break dance; // hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA hA
                 }
-            }
-        }
         this.selectedPiece.selected = true;
         World.dragging = true;
         this.mouseIsDown = true;

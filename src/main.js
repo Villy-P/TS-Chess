@@ -1,7 +1,7 @@
 "use strict";
 class World {
     constructor() {
-        this.board = new Board("white");
+        this.board = new Board();
         World.canvas.width = (DevSettings.boxDimensions * 8) + DevSettings.numberLetterDimensions;
         World.canvas.height = (DevSettings.boxDimensions * 8) + DevSettings.numberLetterDimensions;
         World.canvas.onmousedown = KeyEvents.mouseDown;

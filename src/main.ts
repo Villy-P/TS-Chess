@@ -7,7 +7,7 @@ class World {
     public static dragging: boolean = false;
     public static isWhiteTurn: boolean = true;
 
-    public readonly board: Board = new Board("white");
+    public readonly board: Board = new Board();
 
     public constructor() {
         World.canvas.width  = (DevSettings.boxDimensions * 8) + DevSettings.numberLetterDimensions;

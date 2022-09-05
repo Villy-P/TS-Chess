@@ -3,54 +3,40 @@ class Check {
     static squareBeingAttackedByBlackPiece(squareX, squareY, board) {
         for (const array of board)
             for (const piece of array)
-                if (piece != null)
-                    if (piece.name < 0) {
-                        if (piece.name === -1)
-                            if (Move.validBlackPawnCapture(piece, squareX, squareY)) {
-                                console.log("WOW");
-                                return true;
-                            }
-                        if (piece.name === -2)
-                            if (Move.validKnightMove(piece, squareX, squareY))
-                                return true;
-                        if (piece.name === -3)
-                            if (Move.validBishopMove(piece, squareX, squareY))
-                                return true;
-                        if (piece.name === -4)
-                            if (Move.validRookMove(piece, squareX, squareY))
-                                return true;
-                        if (piece.name === -5)
-                            if (Move.validQueenMove(piece, squareX, squareY))
-                                return true;
-                        if (piece.name === -6)
-                            if (Move.validKingMove(piece, squareX, squareY))
-                                return true;
+                if (piece.value > 0)
+                    switch (piece.value) {
+                        case -1:
+                            return Move.validBlackPawnCapture(piece, squareX, squareY);
+                        case -2:
+                            return Move.validKnightMove(piece, squareX, squareY);
+                        case -3:
+                            return Move.validBishopMove(piece, squareX, squareY);
+                        case -4:
+                            return Move.validRookMove(piece, squareX, squareY);
+                        case -5:
+                            return Move.validQueenMove(piece, squareX, squareY);
+                        case -6:
+                            return Move.validKingMove(piece, squareX, squareY);
                     }
         return false;
     }
     static squareBeingAttackedByWhitePiece(squareX, squareY, board) {
         for (const array of board)
             for (const piece of array)
-                if (piece != null)
-                    if (piece.name > 0) {
-                        if (piece.name === 1)
-                            if (Move.validWhitePawnCapture(piece, squareX, squareY))
-                                return true;
-                        if (piece.name === 2)
-                            if (Move.validKnightMove(piece, squareX, squareY))
-                                return true;
-                        if (piece.name === 3)
-                            if (Move.validBishopMove(piece, squareX, squareY))
-                                return true;
-                        if (piece.name === 4)
-                            if (Move.validRookMove(piece, squareX, squareY))
-                                return true;
-                        if (piece.name === 5)
-                            if (Move.validQueenMove(piece, squareX, squareY))
-                                return true;
-                        if (piece.name === 6)
-                            if (Move.validKingMove(piece, squareX, squareY))
-                                return true;
+                if (piece.value > 0)
+                    switch (piece.value) {
+                        case 1:
+                            return Move.validWhitePawnCapture(piece, squareX, squareY);
+                        case 2:
+                            return Move.validKnightMove(piece, squareX, squareY);
+                        case 3:
+                            return Move.validBishopMove(piece, squareX, squareY);
+                        case 4:
+                            return Move.validRookMove(piece, squareX, squareY);
+                        case 5:
+                            return Move.validQueenMove(piece, squareX, squareY);
+                        case 6:
+                            return Move.validKingMove(piece, squareX, squareY);
                     }
         return false;
     }

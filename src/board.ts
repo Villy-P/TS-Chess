@@ -1,29 +1,16 @@
-type validColors = "white" | "black";
-
 class Board {
-    public static pieces: (Piece|null)[][] = [];
-    public static previousBoard: (Piece|null)[][];
+    public static pieces: Piece[][] = [];
+    public static previousBoard: Piece[][];
 
-    public static board: Piece[] = []; 
-    public color: validColors;
-
-    public constructor(color: validColors) {
-        this.color = color; 
+    public constructor() {
         FenHandling.fillBoardFromFEN(FenHandling.startWhiteFenString); 
     }
 
     public static createEmptyBoard(): void {
         for (let i = 0; i < 8; i++) {
-            Board.pieces.push([
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            ]);
+            Board.pieces.push([]);
+            for (let j = 0; j < 8; j++)
+                Board.pieces[i].push(new Piece(0, i, j));
         }
     }
 
@@ -75,10 +62,10 @@ class Board {
     public drawPieces(): void {
         for (let file = 0; file < 8; file++) {
             for (let rank = 0; rank < 8; rank++) {
-                const piece: Piece | null = Board.pieces[rank][file];
-                if (piece !== null)
+                const piece: Piece = Board.pieces[rank][file];
+                if (piece.value !== 0)
                     Functions.drawImage(
-                        Piece.getImageUrlFromFEN(piece.name), 
+                        Piece.getImageUrlFromFEN(piece.value), 
                         (piece.x * (DevSettings.numberLetterDimensions + 1)) + DevSettings.numberLetterDimensions + piece.dx,
                         (piece.y * (DevSettings.numberLetterDimensions + 1)) + DevSettings.numberLetterDimensions + piece.dy,
                         DevSettings.pieceDimensions, 
