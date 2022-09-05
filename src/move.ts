@@ -3,6 +3,8 @@ class Move {
     public static whiteLeftRookMoved: boolean = false;
     public static whiteRightRookMoved: boolean = false;
     public static blackKingMoved: boolean = false;
+    public static blackLeftRookMoved: boolean = false;
+    public static blackRightRookMoved: boolean = false;
 
     public static validWhitePawnMove(piece: Piece, newX: number, newY: number): boolean {
         if (newY !== 0 && newX !== 0) {
@@ -119,6 +121,10 @@ class Move {
             Move.whiteLeftRookMoved = true;
         if (piece.x == 7 && piece.y == 7)
             Move.whiteRightRookMoved = true;
+        if (piece.x == 0 && piece.y == 0)
+            Move.blackLeftRookMoved = true;
+        if (piece.x == 0 && piece.y == 7)
+            Move.blackRightRookMoved = true;
         return true;
     }
 
@@ -210,8 +216,6 @@ class Move {
     }
 
     public static validWhiteKingMove(piece: Piece, newX: number, newY: number): boolean {
-        console.log(Move.whiteKingMoved)
-        console.log(Move.whiteRightRookMoved)
         if (
             newY === piece.y && 
             piece.x + 2 === newX && 
@@ -242,7 +246,7 @@ class Move {
             !Check.squareBeingAttackedByBlackPiece(piece.x - 2, piece.y, Board.pieces)
         ) {
             Move.whiteKingMoved = true;
-            Move.whiteRightRookMoved = true;
+            Move.whiteLeftRookMoved = true;
             Board.pieces[piece.y][piece.x - 1] = Board.pieces[piece.y][piece.x - 4];
             Board.pieces[piece.y][piece.x - 1].x = piece.x - 1;
             Board.pieces[piece.y][piece.x - 1].y = piece.y;
@@ -257,6 +261,43 @@ class Move {
     }
 
     public static validBlackKingMove(piece: Piece, newX: number, newY: number): boolean {
+        if (
+            newY === piece.y && 
+            piece.x + 2 === newX && 
+            !Move.blackRightRookMoved && 
+            !Move.blackKingMoved && 
+            Board.pieces[piece.y][piece.x + 1].value == 0 &&
+            !Check.squareBeingAttackedByWhitePiece(piece.x, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByWhitePiece(piece.x + 1, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByWhitePiece(piece.x + 2, piece.y, Board.pieces)
+        ) {
+            Move.blackKingMoved = true;
+            Move.blackRightRookMoved = true;
+            Board.pieces[piece.y][piece.x + 1] = Board.pieces[piece.y][piece.x + 3];
+            Board.pieces[piece.y][piece.x + 1].x = piece.x + 1;
+            Board.pieces[piece.y][piece.x + 1].y = piece.y;
+            Board.pieces[piece.y][piece.x + 3] = new Piece(0, piece.x + 3, piece.y);
+            return true;
+        }
+        if (
+            newY === piece.y &&
+            piece.x - 2 === newX &&
+            !Move.blackLeftRookMoved &&
+            !Move.blackKingMoved &&
+            Board.pieces[piece.y][piece.x - 1].value == 0 &&
+            Board.pieces[piece.y][piece.x - 3].value == 0 &&
+            !Check.squareBeingAttackedByWhitePiece(piece.x, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByWhitePiece(piece.x - 1, piece.y, Board.pieces) &&
+            !Check.squareBeingAttackedByWhitePiece(piece.x - 2, piece.y, Board.pieces)
+        ) {
+            Move.blackKingMoved = true;
+            Move.blackLeftRookMoved = true;
+            Board.pieces[piece.y][piece.x - 1] = Board.pieces[piece.y][piece.x - 4];
+            Board.pieces[piece.y][piece.x - 1].x = piece.x - 1;
+            Board.pieces[piece.y][piece.x - 1].y = piece.y;
+            Board.pieces[piece.y][piece.x - 4] = new Piece(0, piece.x - 4, piece.y);
+            return true;
+        }
         if (newX > piece.x + 1 || newX < piece.x - 1 || newY > piece.y + 1 || newY < piece.y - 1)
             return false;
         return true;
