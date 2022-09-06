@@ -4,6 +4,7 @@ class ColorInput {
     public static colorWell3: any = document.getElementById("colorWell3")!;
     public static colorWell4: any = document.getElementById("colorWell4")!;
     public static colorWell5: any = document.getElementById("colorWell5")!;
+    public static colorWell6: any = document.getElementById("colorWell6")!;
 
     public constructor() {
         ColorInput.colorWell1.addEventListener("change", this.watchColorPickerOnePicker, false);
@@ -11,6 +12,7 @@ class ColorInput {
         ColorInput.colorWell3.addEventListener("change", this.watchColorPickerThreePicker, false);
         ColorInput.colorWell4.addEventListener("change", this.watchColorPickerFourPicker, false);
         ColorInput.colorWell5.addEventListener("change", this.watchColorPickerFivePicker, false);
+        ColorInput.colorWell6.addEventListener("change", this.watchColorPickerSixPicker, false);
     }
 
     public watchColorPickerOnePicker(event: any) {
@@ -36,5 +38,10 @@ class ColorInput {
     public watchColorPickerFivePicker(event: any) {
         ColorInput.colorWell5.style.color = event.target.value;
         document.getElementById("header")!.style.backgroundColor = event.target.value;
+    }
+
+    public watchColorPickerSixPicker(event: any) {
+        ColorInput.colorWell6.style.color = event.target.value;
+        World.history.canvas.style.backgroundColor = event.target.value; 
     }
 }
