@@ -1,4 +1,4 @@
-canvas {
+#mainCanvas {
     background-color: cadetblue;
     border: 1px solid black;
     position: absolute;
@@ -7,8 +7,12 @@ canvas {
     transform: translate(-50%, -50%);               
 }
 
+#historyCanvas {
+    background-color: white;
+}
+
 body {
-    background-color: darkslategray;
+    background-color: #25383C;
 }
 
 /* https://www.w3schools.com/css/tryit.asp?filename=trycss_dropdown_navbar */

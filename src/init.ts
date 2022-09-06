@@ -10,6 +10,7 @@ main();
 function run() {
     world.board.drawBoard();
     world.board.drawPieces();
+    World.history.print();
 }
 
 setInterval(run, 33);

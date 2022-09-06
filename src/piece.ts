@@ -119,6 +119,7 @@ class Piece {
             Board.pieces[this.y][this.x] = new Piece(0, this.x, this.y);
             this.x = newX;
             this.y = newY;  
+            World.history.addComponent(new HistoryComponent("WOW", "WOW"));
             if (Check.blackKingInCheckMate()) {
                 alert("Black King is in checkmate. White has won the game!");
                 return;

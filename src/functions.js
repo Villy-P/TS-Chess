@@ -8,19 +8,19 @@ class Functions {
         World.context.strokeStyle = color;
         World.context.strokeRect(x, y, width, height);
     }
-    static drawLine(x1, y1, x2, y2, width = .5) {
-        World.context.beginPath();
-        World.context.lineWidth = width;
-        World.context.moveTo(x1, y1);
-        World.context.lineTo(x2, y2);
-        World.context.stroke();
+    static drawLine(x1, y1, x2, y2, width = .5, context) {
+        context.beginPath();
+        context.lineWidth = width;
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.stroke();
     }
-    static drawText(text, x, y, color = "black", font = "Arial", fontSize = 10, textBaseline = "left", textAlign = "left") {
-        World.context.fillStyle = color;
-        World.context.font = `${fontSize}px ${font}`;
-        World.context.textBaseline = textBaseline;
-        World.context.textAlign = textAlign;
-        World.context.fillText(text, x, y);
+    static drawText(text, x, y, color = "black", font = "Arial", fontSize = 10, textBaseline = "left", textAlign = "left", context) {
+        context.fillStyle = color;
+        context.font = `${fontSize}px ${font}`;
+        context.textBaseline = textBaseline;
+        context.textAlign = textAlign;
+        context.fillText(text, x, y);
     }
     static drawImage(src, x, y, width = 50, height = 50) {
         const image = Functions.images.get(src);

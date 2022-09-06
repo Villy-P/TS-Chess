@@ -11,21 +11,21 @@ class Functions {
         World.context.strokeRect(x, y, width, height);
     }
 
-    public static drawLine(x1: number, y1: number, x2: number, y2: number, width: number = .5): void {
-        World.context.beginPath();
-        World.context.lineWidth = width;
-        World.context.moveTo(x1, y1);
-        World.context.lineTo(x2, y2);
-        World.context.stroke();
+    public static drawLine(x1: number, y1: number, x2: number, y2: number, width: number = .5, context: CanvasRenderingContext2D): void {
+        context.beginPath();
+        context.lineWidth = width;
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.stroke();
     }
 
-    public static drawText(text: string, x: number, y: number, color: string = "black", font: string = "Arial", fontSize: number = 10, textBaseline: string = "left", textAlign: string = "left") {
-        World.context.fillStyle = color;
-        World.context.font = `${fontSize}px ${font}`;
-        World.context.textBaseline = <CanvasTextBaseline> textBaseline; 
-        World.context.textAlign = <CanvasTextAlign> textAlign; 
+    public static drawText(text: string, x: number, y: number, color: string = "black", font: string = "Arial", fontSize: number = 10, textBaseline: string = "left", textAlign: string = "left", context: CanvasRenderingContext2D) {
+        context.fillStyle = color;
+        context.font = `${fontSize}px ${font}`;
+        context.textBaseline = <CanvasTextBaseline> textBaseline; 
+        context.textAlign = <CanvasTextAlign> textAlign; 
         
-        World.context.fillText(text, x, y);
+        context.fillText(text, x, y);
     }
 
     public static drawImage(src: string, x: number, y: number, width: number = 50, height: number = 50) {

@@ -11,10 +11,10 @@ class Board {
         }
     }
     drawNumbers(i, sideNumber) {
-        Functions.drawText(sideNumber.toString(), DevSettings.numberLetterDimensions / 2, (DevSettings.numberLetterDimensions * (i + 2)) - DevSettings.numberLetterDimensions / 2, "black", "Arial", 20, "middle", "center");
+        Functions.drawText(sideNumber.toString(), DevSettings.numberLetterDimensions / 2, (DevSettings.numberLetterDimensions * (i + 2)) - DevSettings.numberLetterDimensions / 2, "black", "Arial", 20, "middle", "center", World.context);
     }
     drawLetters(j) {
-        Functions.drawText(String.fromCharCode(j + 'A'.charCodeAt(0)).toLowerCase(), (DevSettings.numberLetterDimensions * (j + 2)) - DevSettings.numberLetterDimensions / 2, DevSettings.numberLetterDimensions / 2, "black", "Arial", 20, "middle", "center");
+        Functions.drawText(String.fromCharCode(j + 'A'.charCodeAt(0)).toLowerCase(), (DevSettings.numberLetterDimensions * (j + 2)) - DevSettings.numberLetterDimensions / 2, DevSettings.numberLetterDimensions / 2, "black", "Arial", 20, "middle", "center", World.context);
     }
     drawBoard() {
         let sideNumber = 8;

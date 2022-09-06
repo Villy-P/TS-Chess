@@ -23,7 +23,8 @@ class Board {
             "Arial", 
             20, 
             "middle", 
-            "center"
+            "center",
+            World.context
         );
     }
 
@@ -36,7 +37,8 @@ class Board {
             "Arial", 
             20, 
             "middle", 
-            "center"
+            "center",
+            World.context
         );
     }
 

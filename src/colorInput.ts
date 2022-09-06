@@ -2,11 +2,15 @@ class ColorInput {
     public static colorWell1: any = document.getElementById("colorWell1")!;
     public static colorWell2: any = document.getElementById("colorWell2")!;
     public static colorWell3: any = document.getElementById("colorWell3")!;
+    public static colorWell4: any = document.getElementById("colorWell4")!;
+    public static colorWell5: any = document.getElementById("colorWell5")!;
 
     public constructor() {
         ColorInput.colorWell1.addEventListener("change", this.watchColorPickerOnePicker, false);
         ColorInput.colorWell2.addEventListener("change", this.watchColorPickerTwoPicker, false);
         ColorInput.colorWell3.addEventListener("change", this.watchColorPickerThreePicker, false);
+        ColorInput.colorWell4.addEventListener("change", this.watchColorPickerFourPicker, false);
+        ColorInput.colorWell5.addEventListener("change", this.watchColorPickerFivePicker, false);
     }
 
     public watchColorPickerOnePicker(event: any) {
@@ -22,5 +26,15 @@ class ColorInput {
     public watchColorPickerThreePicker(event: any) {
         ColorInput.colorWell3.style.color = event.target.value;
         World.canvas.style.backgroundColor = event.target.value;
+    }
+
+    public watchColorPickerFourPicker(event: any) {
+        ColorInput.colorWell4.style.color = event.target.value;
+        document.body.style.backgroundColor = event.target.value;
+    }
+
+    public watchColorPickerFivePicker(event: any) {
+        ColorInput.colorWell5.style.color = event.target.value;
+        document.getElementById("header")!.style.backgroundColor = event.target.value;
     }
 }
