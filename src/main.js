@@ -14,5 +14,7 @@ World.context = World.canvas.getContext("2d");
 World.boundingClient = World.canvas.getBoundingClientRect();
 World.offsetX = World.boundingClient.left;
 World.offsetY = World.boundingClient.top;
+World.colorPickers = new ColorInput();
+World.drawCounter = 0;
 World.dragging = false;
 World.isWhiteTurn = true;

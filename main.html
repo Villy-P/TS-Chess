@@ -5,12 +5,23 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!--https://www.w3schools.com/css/tryit.asp?filename=trycss_dropdown_navbar-->
+    <ul>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">Colors</a>
+            <div class="dropdown-content">
+                <a href="#"><input type="color" value="#FFFFFF" id="colorWell1"> White Square</a>
+                <a href="#"><input type="color" value="#006400" id="colorWell2"> Black Square</a>
+                <a href="#"><input type="color" value="#5f9ea0" id="colorWell3"> Canvas Background</a>
+            </div>
+        </li>
+    </ul>
+
     <canvas id="canvas"></canvas>
 
     <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
 
-    <script>let exports = {};</script>
-
+    <script src="src/colorInput.js"></script>
     <script src="src/main.js"></script>
     <script src="src/fenHandling.js"></script>
     <script src="src/functions.js"></script>

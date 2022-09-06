@@ -107,6 +107,8 @@ class Piece {
             return;
         let check = Piece.getValidMove(this, newX, newY);
         if (check) {
+            if (this.value === 1)
+                World.drawCounter = 0;
             if (Check.squareBeingAttackedByBlackPiece(newX, newY, Board.pieces) && this.value === 6)
                 return;
             this.getPromotion(newY);
@@ -121,6 +123,11 @@ class Piece {
                 return;
             }
             Black.makeMove();
+            World.drawCounter += 2;
+            if (World.drawCounter === 100) {
+                alert("Game has ended in a draw");
+                return;
+            }
             if (Check.whiteKingInCheckMate()) {
                 alert("White King is in checkmate. Black has won the game!");
                 return;

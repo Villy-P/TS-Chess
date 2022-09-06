@@ -4,6 +4,8 @@ class World {
     public static readonly boundingClient: DOMRect = World.canvas.getBoundingClientRect();
     public static readonly offsetX: number = World.boundingClient.left;
     public static readonly offsetY: number = World.boundingClient.top;
+    public static readonly colorPickers: ColorInput = new ColorInput();
+    public static drawCounter: number = 0;
     public static dragging: boolean = false;
     public static isWhiteTurn: boolean = true;
 
