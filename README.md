@@ -168,6 +168,19 @@ body {}
 
 You will put the style elements within the braces.
 
+Let's look at the first element: `body`.
+
+Since there is no `#` or `.`, we know that we will be changing the attributes of a tag.
+This means whatever changes we make will apply to all `<body>` tags.
+
+This is our `body` part in the `style.scss` file:
+
+``` css
+body {
+    background-color: #25383C;
+}
+```
+
 
 
 ---
