@@ -23,6 +23,22 @@ class Piece {
         ['K', 6]
     ]);
 
+    public static pieceNumberIdentifiers: Map<number, string> = new Map([
+        [0, 'x'],
+        [-1, 'p'],
+        [-2, 'n'],
+        [-3, 'b'],
+        [-4, 'r'],
+        [-5, 'q'],
+        [-6, 'k'],
+        [1, 'P'],
+        [2, 'N'],
+        [3, 'B'],
+        [4, 'R'],
+        [5, 'Q'],
+        [6, 'K'],
+    ]);
+
     public constructor(value: number, x: number, y: number) {
         this.value = value;
         this.x = x;
@@ -94,6 +110,20 @@ class Piece {
         throw new Error("Pieces value is undefined");
     }
 
+    public static invertNumber(number: number): number {
+        switch (number) {
+            case 0: return 8;
+            case 1: return 7;
+            case 2: return 6;
+            case 3: return 5;
+            case 4: return 4;
+            case 5: return 3;
+            case 6: return 2;
+            case 7: return 1;
+        }
+        return 0;
+    }
+
     public move(e: MouseEvent): void {
         this.selected = false;
 
@@ -108,18 +138,27 @@ class Piece {
             return;
         let check: boolean = Piece.getValidMove(this, newX, newY);
         if (check) {
+            let historyComponent: string = "";
+            let blackKing: Piece = Piece.getKing(false, Board.pieces);
+            if (this.value === 6 && Board.pieces[newY][newX - 1].value === 4)
+                historyComponent = "O-O";
+            else if (Board.pieces[newY][newX].value === 0)
+                historyComponent = Piece.pieceNumberIdentifiers.get(this.value) + "-" + String.fromCharCode(97 + newX) + Piece.invertNumber(newY);
+            else
+                historyComponent = Piece.pieceNumberIdentifiers.get(this.value)! + Piece.pieceNumberIdentifiers.get(Board.pieces[newY][newX].value) + 'x' + String.fromCharCode(97 + newX) + Piece.invertNumber(newY);
             if (this.value === 1)
                 World.drawCounter = 0;
             if (Check.squareBeingAttackedByBlackPiece(newX, newY, Board.pieces) && this.value === 6)
                 return;
-            this.getPromotion(newY);
-            Board.previousBoard = Functions.deepCopy(Board.pieces);
-            this.hasMoved = true;
+                this.getPromotion(newY);
+                Board.previousBoard = Functions.deepCopy(Board.pieces);
+                this.hasMoved = true;
             Board.pieces[newY][newX] = this;
             Board.pieces[this.y][this.x] = new Piece(0, this.x, this.y);
             this.x = newX;
             this.y = newY;  
-            World.history.addComponent(new HistoryComponent("WOW", "WOW"));
+            if (Check.squareBeingAttackedByWhitePiece(blackKing.x, blackKing.y, Board.pieces))
+                historyComponent += "+";
             if (Check.blackKingInCheckMate()) {
                 alert("Black King is in checkmate. White has won the game!");
                 return;
@@ -134,6 +173,7 @@ class Piece {
                 alert("White King is in checkmate. Black has won the game!");
                 return;
             }
+            World.history.addComponent(new HistoryComponent(historyComponent, "WOW"));
         }
     }
 

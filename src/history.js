@@ -15,7 +15,8 @@ class HistoryCanvas {
         Functions.drawLine(20, 0, 20, this.canvas.height, undefined, this.context);
         Functions.drawLine(110, 0, 110, this.canvas.height, undefined, this.context);
         for (let i = 1; i <= this.components.length; i++) {
-            Functions.drawText(i + ":", 2, ((i) * 20 - 5), "black", "Arial", 6.5, undefined, undefined, this.context);
+            Functions.drawText(i + ":", 2, ((i) * 20 - 5), "black", "Arial", 10, undefined, undefined, this.context);
+            Functions.drawText(this.components[i - 1].move1, 22, ((i) * 20 - 5), "black", "Arial", 10, undefined, undefined, this.context);
             Functions.drawLine(0, (i * 20), this.canvas.width, (i * 20), undefined, this.context);
         }
     }

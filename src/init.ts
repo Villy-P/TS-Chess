@@ -10,6 +10,7 @@ main();
 function run() {
     world.board.drawBoard();
     world.board.drawPieces();
+    World.history.context.clearRect(0, 0, World.history.canvas.width, World.history.canvas.height);
     World.history.print();
 }
 
