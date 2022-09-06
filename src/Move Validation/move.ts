@@ -144,23 +144,31 @@ class Move {
         // Down-Right
         if (newX > piece.x && newY > piece.y)
             for (let i = 1; i < Math.max(newX - piece.x, newY - piece.y); i++)
-                if (Board.pieces[piece.y + i][piece.x + i].value != 0)
-                    return false;
+                if (!(piece.y + i < 0 || piece.y + i > 7 || piece.x + i < 0 || piece.x + i > 7))
+                    if (Board.pieces[piece.y + i][piece.x + i] != undefined)
+                        if (Board.pieces[piece.y + i][piece.x + i].value != 0)
+                            return false;
         // Up-Left
         if (newX < piece.x && newY < piece.y)
             for (let i = 1; i < Math.max(piece.x - newX, piece.y - newY); i++)
-                if (Board.pieces[piece.y - i][piece.x - i].value != 0)
-                    return false;
+                if (!(piece.y - i < 0 || piece.y - i > 7 || piece.x - i < 0 || piece.x - i > 7))
+                    if (Board.pieces[piece.y - i][piece.x - i] != undefined)
+                        if (Board.pieces[piece.y - i][piece.x - i].value != 0)
+                            return false;
         // Down-Left
         if (newX < piece.x && newY > piece.y)
             for (let i = 1; i < Math.max(piece.x - newX, newY - piece.y); i++)
-                if (Board.pieces[piece.y + i][piece.x - i].value != 0)
-                    return false;
+                if (!(piece.y + i < 0 || piece.y + i > 7 || piece.x - i < 0 || piece.x - i > 7))
+                    if (Board.pieces[piece.y + i][piece.x - i] != undefined)
+                        if (Board.pieces[piece.y + i][piece.x - i].value != 0)
+                            return false;
         // Up-Right
         if (newX > piece.x && newY < piece.y)
             for (let i = 1; i < Math.max(newX - piece.x, piece.y - newY); i++)
-                if (Board.pieces[piece.y - i][piece.x + i].value != 0)
-                    return false;
+                if (!(piece.y - i < 0 || piece.y - i > 7 || piece.x + i < 0 || piece.x + i > 7))
+                    if (Board.pieces[piece.y - i][piece.x + i] != undefined)
+                        if (Board.pieces[piece.y - i][piece.x + i].value != 0)
+                            return false;
         // Special thanks to Andrew at https://stackoverflow.com/questions/4288729/implementing-rules-for-a-bishop-in-chess
         return Math.abs(newX - piece.x) == Math.abs(newY - piece.y);
     }
