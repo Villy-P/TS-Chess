@@ -31,7 +31,7 @@ Chess game in TypeScript. For Logic class
 
 ---
 
-## Intro to HTML
+## HTML
 
 ---
 
@@ -120,7 +120,7 @@ Then we have this long `<div>` tag:
 The `<div>` tag itself specifies a certain section of the webpage and it has a class name of `dropdown-content`.
 Each item within the `<div>` tag has an `<a>` tag with a href of `"#"` (do nothing) and an `<input>` tag that specifies the type of input.
 We set the `type` attribute to `color` so the webpage knows we will be making a color selector.
-Then we give the base color value as a certain hexadecimal value, which is a very fancy way of specifying different color (Like an RGBA value).
+Then we give the base color value as a certain color value, which is a very fancy way of specifying different color (Like an RGBA value).
 The `#FFFFFF` color is white, specifyed by the 3 pairs of `FF`, which means full values of Red, Green, and White (255, 255, 255).
 Next we assign each value an `id` so we can access it in the TypeScript/JavaScript.
 The White Text is what we will actually be displaying to the user.
@@ -181,6 +181,201 @@ body {
 }
 ```
 
+In `<body>` we only have one attribute: `background-color`, which sets the background color of the body to a color code of `#25383C`.
 
+Next we have two canvas values, but let's only look at the first one.
+
+``` css
+#mainCanvas  {
+    background-color: cadetblue;
+    border: 1px solid black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);               
+}
+```
+
+We have a title of `#mainCanvas`, which means whichever tags in the `HTML` file have an id of `mainCanvas`, apply these attributes to them.
+In this case we are setting the attributes of the main canvas where our chess game will run on.
+
+The first tag (`background-color`) sets the background of the canvas to `cadetblue` (HTML can also read plain text as colors too).
+Then we set the `border` attribute to `1px solid black`.
+This sets the border of the canvas to be one pixel wide and have a boldened, black look to it.
+The four next attributes have to do with setting the canvas to be centered on the screen.
+Lets look at each of them.
+
+- `position: absolute`
+  - This means that the canvas will be positioned to be relative to the body. The next two properties will determine that.
+- `top: 50%`
+  - This sets the postition relative to the top to 50%. For example, if the screen was 1000px tall, then the canvas would be placed 500px away from the top.
+- `left: 50%`
+  - This sets the position relative to the left to 50%. For example, if the screen was 1000px wide, then the canvas would be placed 500px away from the left.
+- The two properties above cause the canvas to shift to the middle of the screen, however the top left corner of the screen will be at the center, so we will need to place the center of the canvas to the center of the screen.
+- `transform: translate(-50%, -50%)`
+  - The `transform` property will move the canvas to the place provided.
+  - The `translate` function will move it in whichever direction specified.
+    - In this case, we translate it -50% in both directions because we want to shift if left and up by half of the canvas width and height. This causes the center of the canvas to be in the very center of the screen.
+
+Next we have a bunch of properties for the navigation bar at the top of the screen. The rest of the code is used to make unordered lists look like that.
+
+First we need to set the properties of the unordered list itself.
+
+``` css
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #38444d;
+}
+```
+
+Lets go over these properties one by one.
+
+- `list-style-type: none`
+  - If we were to create an unordered list in HTML without any CSS it would look like a normal, bulleted list. What we do with this tag is remove the bullet points.
+- `margin: 0` and `padding: 0`
+  - We'll go over these later.
+- `overflow: hidden`
+  - This says that if any of the value overflow (cannot be fit on the screen) to hide them from the user.
+- `background-color`
+  - Sets the background color
+
+Now for `margin: 0` and `padding: 0`.
+
+To understand these, first we have to understand the **box model**.
+
+This is a box model:
+
+``` text
+╔═══════════════════════════╗
+║           Margin          ║
+║  ╔═════════════════════╗  ║
+║  ║        Border       ║  ║
+║  ║  ╔═══════════════╗  ║  ║
+║  ║  ║    Padding    ║  ║  ║
+║  ║  ║  ╔═════════╗  ║  ║  ║
+║  ║  ║  ║ Content ║  ║  ║  ║
+║  ║  ║  ╚═════════╝  ║  ║  ║
+║  ║  ╚═══════════════╝  ║  ║
+║  ╚═════════════════════╝  ║
+╚═══════════════════════════╝
+```
+
+These are the parts of a box model:
+
+- Margin
+  - A transparent area around the border.
+- Border
+  - A border that surrounds the padding.
+- Padding
+  - A transparent area around the content.
+- Content
+  - The actual content (In this case an unordered list)
+
+When we set the `margin` and `padding` to `0`, we are saying that there is no margin or padding.
+
+Next we have `li`.
+
+``` css
+li {
+  float: left;    
+}
+```
+
+`li` is a list element, so out unordered list contains `li` tags. The `float` property tells all `li` tags to float to the left of the list, so in our navigation bar it will look like this:
+
+``` text
+╔═══════╦═══════════════════╗
+║ Item  ║ Item              ║
+╚═══════╩═══════════════════╝
+```
+
+If `float` were right, our navigation bar would look like this:
+
+``` text
+╔════════════════════╦══════╗
+║               Item ║ Item ║
+╚════════════════════╩══════╝
+```
+
+After this we have this block of code:
+
+``` css
+li a, .dropbtn {
+  display: inline-block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+```
+
+The `li a` tells the HTML that we are looking for `<a>` tags within `<li>` tags. The `.dropbtn` says we are also looking for a tag with the class name of `dropbtn`.
+
+Lets go over all these attributes:
+
+- `display: inline-block`
+  - Set the display type to an inline block element.
+- `color: black`
+  - Unlike `background-color`, `color` sets the color of the text, so any text displayed on an `a` tag within a `li` tag with a class name of `dropbtn` will be `black`.
+- `text-align: center`
+  - Centers any text at the middle of that element.
+- `padding: 14px 16px`
+  - This sets the top and bottom padding to 14px and the left and right padding to 16px.
+- `text-decoration: none`
+  - Tells the HTML that the text should have no decoration applied to it.
+
+Next we have another block:
+
+``` css
+li a:hover, .dropdown:hover .dropbtn {
+  background-color: red;
+}
+```
+
+This says whenever we hover over an `a` tag within a `li` tag with a class name of `dropbtn` within an element that has a class name of `dropdown`, change the background color to `red`.
+
+Here are some more blocks (With their explanations in green)
+
+``` css
+/* Find a <li> tag with a class of dropdown */
+li.dropdown {
+  display: inline-block;
+}
+
+/* When you hover over a dropdown-content class and an <a> tag, change the background color to gray */
+.dropdown-content a:hover {
+  background-color: gray;
+}
+
+/* When you hover over a dropdown class and with a class of dropdown-content */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+```
+
+Now we have another block:
+
+``` css
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: black;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+```
+
+- `display: none`
+  - Hides the display (While you are not hovering over it)
+- `position: absolute`
+  - This means that the canvas will be positioned to be relative to the body.
+- `background-color: black`
+  - Sets the background color to black.
+- `min-width: 160px`
+  - 
 
 ---
