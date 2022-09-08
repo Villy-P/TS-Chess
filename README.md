@@ -376,5 +376,17 @@ Now we have another block:
   - Sets the background color to black.
 - `min-width: 160px`
   - The width of the element will never be less than 160px.
+- `z-index: 1`
+  - Sets the z-order of the element (So this element will be on top of all others)
+
+Most of the other elements have attributes that we have seen before, so we don't need to view other elements. Now SASS, CSS, and HTML are *not* exactly programming languages. You could call them programming languages because they all provide instructions to the computer, but none of them are turing complete. In order to be turing complete it needs to be able to run programs efficiently. HTML doesn't have if statements and SASS/CSS don't have functions so they can't do recursion. In order to have a turing complete language in the trio, we need *JavaScript*, but before we dive into that mess, we need to talk about other programs that this project uses.
+
+---
+
+## Git
+
+---
+
+[Git](https://git-scm.com/) is a 
 
 ---
