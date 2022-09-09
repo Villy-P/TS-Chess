@@ -635,27 +635,6 @@ Here are some examples (You can try them yourself by pressing ctrl + shift + i w
 | `false + []`        | False plus empty array           | `false`             |
 | `++[[]][+[]]`       | A mess                           | `1`                 |
 
-``` javascript
-// What is the type of not a number
-typeof NaN; // Number
-// Maximum number
-Math.max(); // -Infinity
-// Minimum Number
-Math.min(); // Infinity
-// Empty array plus empty array
-[] + []; // Empty array
-// Does 0.1 + 0.2 equal 0.3?
-0.1 + 0.2 === 0.3; // false
-// Empty array plus an empty object 
-[] + {}; // "[object Object]"
-// Empty Object plus an empty array
-{} + []; // 0
-// False plus empty array
-false + []; // "false"
-// This mess
-++[[]][+[]]; // 1
-```
-
 And there are *many* more examples of this.
 To counter this, we can use TypeScript.
 
