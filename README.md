@@ -541,12 +541,12 @@ Here is an example of that:
 
 ``` javascript
 let variable = "variable"; // Variable is an string.
-variable = 0; // Variable is a number.
-variable = false; // Variable is a boolean.
-console.log(variable); // Prints false.
+variable = 0;              // Variable is a number.
+variable = false;          // Variable is a boolean.
+console.log(variable);     // Prints false.
 ```
 
-In statically typed languages such as C++, C, C#, and Java.
+In statically typed languages such as C++, C, C#, and Java, variables need type names.
 Here is the same code but in C++.
 
 ``` cpp
@@ -816,5 +816,227 @@ After those two, we have a `drawCounter` set to 0. Later, we will check if that 
 
 Next, we have a variable that is a `boolean` (`true` or `false`) that checks if we are currently dragging a piece.
 We also have another `boolean` to check if it is white's turn.
+
+Then we initialize the board, which we will go over when we reach he `board.ts` file.
+
+Next we have our `constructor`.
+A `constructor` is called whenever a class is created.
+For example, we have this program (in C#)::
+
+``` csharp
+public class Item {
+  // In most languages, constructros are made by using the class name as a function. Javascript used the constructor keyword.
+  public Item() {
+    Console.WriteLine("Constructor Called");
+  }
+}
+
+public class Program {
+  // Program.Main will be called when the Program is run.
+  public static void Main(string[] args) {
+    Console.WriteLine("Program Started");
+    Item item = new Item();
+    Console.WriteLine("Program Ended");
+  }
+}
+```
+
+If we run this program, this is the output:
+
+``` text
+Program Started
+Constructor Called
+Program Ended
+```
+
+This is because the `Console.WriteLine("Constructor Called")` was within the constructor, which was called when the variable `item` is initialized.
+It's the same deal in TypeScript.
+Within the constructor, we usually initialize class variables, but since `World` has no class variables, we don't.
+Instead, we set some properties of the `World` variables.
+
+The first thing we do is set the width and height of our canvas.
+We do this by calling two static variables from another class, `DevSettings`.
+We won't go over the `DevSettings` class, but all you need to know is it is settings that the developer (me) can set for debugging and playtesting.
+We calculate the width and height, and then we set some more properties.
+We'll go over the values later, but what this does is it maps functions to events.
+So when the mouse goes down, it calls `KeyEvents.mouseDown()` (We don't need the parenthesis).
+
+Now that we have finished the `main.ts` file, we should go into some of the UI files before getting into the actuall chess game.
+
+### The ColorInput.ts file
+
+Here is our `colorInput.ts` file:
+
+``` typescript
+class ColorInput {
+  public static colorWell1: any = document.getElementById("colorWell1")!;
+  public static colorWell2: any = document.getElementById("colorWell2")!;
+  public static colorWell3: any = document.getElementById("colorWell3")!;
+  public static colorWell4: any = document.getElementById("colorWell4")!;
+  public static colorWell5: any = document.getElementById("colorWell5")!;
+  public static colorWell6: any = document.getElementById("colorWell6")!;
+
+  public constructor() {
+    ColorInput.colorWell1.addEventListener("change", this.watchColorPickerOnePicker);
+    ColorInput.colorWell2.addEventListener("change", this.watchColorPickerTwoPicker);
+    ColorInput.colorWell3.addEventListener("change", this.watchColorPickerThreePicker);
+    ColorInput.colorWell4.addEventListener("change", this.watchColorPickerFourPicker);
+    ColorInput.colorWell5.addEventListener("change", this.watchColorPickerFivePicker);
+    ColorInput.colorWell6.addEventListener("change", this.watchColorPickerSixPicker);
+  }
+
+  public watchColorPickerOnePicker(event: any) {
+      ColorInput.colorWell1.style.color = event.target.value;
+      UserSettings.whiteSquareColor = event.target.value;
+  }
+
+  public watchColorPickerTwoPicker(event: any) {
+      ColorInput.colorWell1.style.color = event.target.value;
+      UserSettings.blackSquareColor = event.target.value;
+  }
+
+  public watchColorPickerThreePicker(event: any) {
+      ColorInput.colorWell3.style.color = event.target.value;
+      World.canvas.style.backgroundColor = event.target.value;
+  }
+
+  public watchColorPickerFourPicker(event: any) {
+      ColorInput.colorWell4.style.color = event.target.value;
+      document.body.style.backgroundColor = event.target.value;
+  }
+
+  public watchColorPickerFivePicker(event: any) {
+      ColorInput.colorWell5.style.color = event.target.value;
+      document.getElementById("header")!.style.backgroundColor = event.target.value;
+  }
+
+  public watchColorPickerSixPicker(event: any) {
+      ColorInput.colorWell6.style.color = event.target.value;
+      World.history.canvas.style.backgroundColor = event.target.value; 
+  }
+}
+```
+
+OK, so first thing we do is create a class with a name of `ColorInput`.
+The we create six color wells by calling their ID's from the HTML.
+These color wells are what you see when you hover over the `Colors` icon in the top navigation bar.
+This file will be used to facilitate everything with those color wells.
+
+Next, we have our constructors.
+For each of our color wells, we add an event listiner too them.
+addEventListener has two arguments, and here they are:
+
+- `type`
+  - The type of input we are looking for. For the color wells, we are looking for changes in the color.
+- `listener`
+  - What to call when the item changes. This does not need to have parenthesis even though we are calling a function. This is because the function will only have one argument, the event, which JavaScript automatically assigns it.
+
+So now we will check for changes in the color wells and if we find one we call the `listener`.
+
+After this we have six functions, one for each well.
+Each function has one argument, `event`, which can be anything.
+I won't go through each one, but what you need to know is that it first updates the color picker value, then updates whatever color it is actually used for.
+
+### The History file and the HistoryComponent file
+
+Here is the `history.ts` file:
+
+``` typescript
+class HistoryCanvas {
+  public readonly canvas: HTMLCanvasElement = <HTMLCanvasElement> document.getElementById("historyCanvas");
+  public readonly context: CanvasRenderingContext2D = this.canvas.getContext("2d")!;
+
+  public components: HistoryComponent[] = [];
+
+  public constructor() {
+    this.canvas.width = 200;
+    this.canvas.height = 0;
+  }
+
+  public addComponent(component: HistoryComponent): void {
+    this.canvas.height += 20;
+    this.components.push(component);
+  }
+
+  public print(): void {
+    Functions.drawLine(20, 0, 20, this.canvas.height, undefined, this.context);
+    Functions.drawLine(110, 0, 110, this.canvas.height, undefined, this.context);
+    for (let i = 1; i <= this.components.length; i++) {
+      Functions.drawText(i + ":", 2, ((i) * 20 - 5), "black", "Arial", 10, undefined, undefined, this.context);
+      Functions.drawText(this.components[i - 1].move1, 22, ((i) * 20 - 5), "black", "Arial", 10, undefined, undefined, this.context);
+      Functions.drawLine(0, (i * 20), this.canvas.width, (i * 20), undefined, this.context);
+    }
+  }
+}
+```
+
+And here is our `historyComponent.ts` file:
+
+``` typescript
+class HistoryComponent {
+  public move1: string;
+  public move2: string;
+
+  public constructor(move1: string, move2: string) {
+    this.move1 = move1;
+    this.move2 = move2;
+  }
+}
+```
+
+Let's go over the `historyComponent.ts` file first, as it is much further.
+
+The first thing we do in our `HistoryComponent` class is create two public variables, `move1`, and `move2` (Which goes unused, but YOU can do it!).
+
+Then we create our constructor and have two arguments that match our variable names, and then within the constructor, we set our class variables to the parameters.
+
+Here is how this works:
+
+``` typescript
+// Create a new HistoryComponent and pass in move1 and move2, which must be strings
+let historyComponent: HistoryComponent = new HistoryComponent("move1", "move2");
+// In the constructor, we set the values of the class too what we passed in.
+// When we are outside of the class instead of using 'this' we use the class name instead.
+// This prints out "move1" because when we initialized the history component we set move1 to "move1"
+console.log(historyComponent.move1);
+```
+
+Now to our `history.ts` file.
+First thing we do is grab our `historyCanvas` and set the `context` (Just like me did in `main.ts`).
+Next we create a class variable called components, which will be an array of `HistoryComponent`'s.
+This is how arrays work:
+
+``` typescript
+// Create a new variable called array and set its value to an empty array.
+// The type is string[], which means that it must be an array with only string types.
+let array: string[] = [];
+// We can also let an array contain string or ints by doing this:
+let array2: (int|string)[] = [];
+// Now array is just an empty array:
+// []
+// We can add items to it:
+array.push("String1");
+// Now array is this:
+// ["String1"]
+// We can also add many values:
+for (let i = 2; i < 10; i++)
+  array.push("String" + i.toString());
+// Now out array is this:
+// ["String1", "String2", "String3", "String4", "String5", "String6", "String7", "String8", "String9"]
+// We can also remove items:
+array.pop();
+// Now our array is this:
+// ["String1", "String2", "String3", "String4", "String5", "String6", "String7", "String8"]
+// We can call values by their index.
+// In TypeScript and JavaScript, arrays start at index 0.
+// Here is a visulaization:
+
+// ["bannana", "squash", "carrot"]
+//     ^          ^          ^
+//   Index 0     Index 1    Index 2
+
+// This returns "String5"
+array[4];
+```
 
 ---

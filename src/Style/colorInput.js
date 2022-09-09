@@ -1,12 +1,12 @@
 "use strict";
 class ColorInput {
     constructor() {
-        ColorInput.colorWell1.addEventListener("change", this.watchColorPickerOnePicker, false);
-        ColorInput.colorWell2.addEventListener("change", this.watchColorPickerTwoPicker, false);
-        ColorInput.colorWell3.addEventListener("change", this.watchColorPickerThreePicker, false);
-        ColorInput.colorWell4.addEventListener("change", this.watchColorPickerFourPicker, false);
-        ColorInput.colorWell5.addEventListener("change", this.watchColorPickerFivePicker, false);
-        ColorInput.colorWell6.addEventListener("change", this.watchColorPickerSixPicker, false);
+        ColorInput.colorWell1.addEventListener("change", this.watchColorPickerOnePicker);
+        ColorInput.colorWell2.addEventListener("change", this.watchColorPickerTwoPicker);
+        ColorInput.colorWell3.addEventListener("change", this.watchColorPickerThreePicker);
+        ColorInput.colorWell4.addEventListener("change", this.watchColorPickerFourPicker);
+        ColorInput.colorWell5.addEventListener("change", this.watchColorPickerFivePicker);
+        ColorInput.colorWell6.addEventListener("change", this.watchColorPickerSixPicker);
     }
     watchColorPickerOnePicker(event) {
         ColorInput.colorWell1.style.color = event.target.value;
