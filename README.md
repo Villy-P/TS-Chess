@@ -624,6 +624,17 @@ This is one of the reasons that Javascript is bad. Another reason is how weird i
 
 Here are some examples (You can try them yourself by pressing ctrl + shift + i within Google Chrome and clicking on Console):
 
+| Code                | Explanation                      | What it returns     |
+|---------------------|----------------------------------|---------------------|
+| `typeof NaN`        | What is the type of not a number | `number`            |
+| `Math.max()`        | Maximum number                   | `-Infinity`         |
+| `Math.min()`        | Minimum number                   | `Infinity`          |
+| `0.1 + 0.2 === 0.3` | Does 0.1 + 0.2 equal 0.3?        | `false`             |
+| `[] + {}`           | Empty array plus empty object    | `"[object Object]"` |
+| `{} + []`           | Empty object plus empty array    | `0`                 |
+| `false + []`        | False plus empty array           | `false`             |
+| `++[[]][+[]]`       | A mess                           | `1`                 |
+
 ``` javascript
 // What is the type of not a number
 typeof NaN; // Number
