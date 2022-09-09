@@ -784,4 +784,37 @@ We give it a `public` access modifier.
 We also use the `readonly` keyword.
 The `readonly` keyword makes it so that the variable cannot be changed, and if you try to change it, the program will throw an error.
 
+We also set the `canvas` to `static`.
+This means that any class can access that variable.
+For example: if we were in `Move.ts` and needed the canvas, we could call `World.canvas`.
+This looks into the `World` class and finds the variable named `canvas`.
+
+After this we give our canvas a type of `HTMLCanvasElement`.
+After the equals sign we *cast* a value.
+Casting is telling the TypeScript compiler that *I know what I'm doing and i know that this value is of this type.*
+We set the value of `World.canvas` to `document.getElementById("mainCanvas")`. Here is what that does:
+
+- `document` calls the HTML body.
+- Within the `document`, we get an element by it's ID.
+- We get the ID of `mainCanvas`.
+- Then, we tell the compiler that we know that we just got an `HTMLCanvasElement`, so it sets the type to that.
+
+Next, we create the `context` of the `canvas`.
+The `context` will be used to draw shapes and text to the canvas.
+Whenever we call `getContext` on a canvas, it has a chance to return `null`, which is the German word for zero, because it does not know that the canvas has a context.
+We can put a `!` after the value to tell the compiler that *I, the developer have specifically checked this variable and have confermed that it does not equal null*.
+
+Next we get the bounding rectangle of the canvas by calling `World.cavas.getBoundingClientRect()`.
+This gets the position of the canvas relative to the body.
+We use this later to get info about where the user clicked their mouse.
+
+Since we only need two values from the bounding rectangle, we can give the values to variables called `xOffset` and `yOffset`.
+
+Next we have two variables that create new classes, however we will go over these when we get to their respective files.
+
+After those two, we have a `drawCounter` set to 0. Later, we will check if that value has hit 100 to end the game due to a draw.
+
+Next, we have a variable that is a `boolean` (`true` or `false`) that checks if we are currently dragging a piece.
+We also have another `boolean` to check if it is white's turn.
+
 ---
