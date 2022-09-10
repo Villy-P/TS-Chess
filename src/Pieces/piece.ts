@@ -104,8 +104,9 @@ class Piece {
             case -5:
                 return Move.validQueenMove(piece, newX, newY);
             case 6:
-            case -6:
                 return Move.validWhiteKingMove(piece, newX, newY);
+            case -6:
+                return Move.validBlackKingMove(piece, newX, newY);
         }
         throw new Error("Pieces value is undefined");
     }
@@ -173,7 +174,7 @@ class Piece {
                 alert("White King is in checkmate. Black has won the game!");
                 return;
             }
-            World.history.addComponent(new HistoryComponent(historyComponent, "WOW"));
+            World.history.addComponent(new HistoryComponent(historyComponent, ""));
         }
     }
 

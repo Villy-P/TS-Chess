@@ -90,8 +90,9 @@ class Piece {
             case -5:
                 return Move.validQueenMove(piece, newX, newY);
             case 6:
-            case -6:
                 return Move.validWhiteKingMove(piece, newX, newY);
+            case -6:
+                return Move.validBlackKingMove(piece, newX, newY);
         }
         throw new Error("Pieces value is undefined");
     }
