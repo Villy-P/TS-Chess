@@ -1229,4 +1229,89 @@ Here are the parts of a FEN String and a table to acompany them:
 | prnbqk     | Black piece of that type (n = Knight, k = King, q = Queen, etc.) |
 | /          | Go down one rank                                                 |
 
+The first variable is the FEN for the starting position from white's side.
+
+The first function is used to load a position from a FEN string.
+First we create a new board then fill it with blank objects (This will come up later).
+After that we use the `split()` function to split the string by spaces.
+Then we specify the file and rank.
+After that we loop through each character of the FEN string.
+First we check to see if it is a slash.
+If it is we reset the file and add one to the rank.
+Otherwise we then check if the character is a number.
+If it is then we add that number to the file.
+Otherwise we set the piece at the position on the board and add one to the file.
+
+If none of this makes sense now, it will once we get to `board.ts`.
+
+Next we have a function that creates a FEN string based on a board.
+The first thing we do is create an empty string.
+Then we loop over all the arrays of the board.
+We then create a variable that will store the amount of empty squares.
+Then we loop over all the pieces in that array
+If the pieces value is 0 then we add one to the empty squares.
+Otherwise we check if there are no empty squares.
+If that is `true`, then we add the number of empty squares to the FEN string and then set `emptySquares` to `0`.
+The we check if the pieces value is not 0.
+If that is `true`, then we add the value of that piece to the FEN string.
+After that we check if the value of `emptySquares` is not equal to 0.
+If it is not then we add the amount of empty squares to the FEN string.
+After that we add a slash to the fen string.
+Then after we exit both loops the we remove the last character of the FEN string with `slice` because there is an extra slash at the end of our string.
+Then we add other data and return the FEN string.
+
+### The Move file
+
+This file is really big, so we are going to be looking at it function by function.
+
+But first, we have variables that check if some pieces have moved for castling.
+
+Here is the first function:
+
+``` typescript
+public static validWhitePawnMove(piece: Piece, newX: number, newY: number): boolean {
+    if (newY !== 0 && newX !== 0) {
+        if (piece.y - 1 == newY && piece.x - 1 == newX && Board.previousBoard[piece.y - 2][piece.x - 1].value != 0) {
+            if (Board.previousBoard[piece.y - 2][piece.x - 1].value == -1) {
+                if (Board.pieces[newY + 1][newX].value < 0)
+                    Board.pieces[newY + 1][newX].value = 0;
+                return true;
+            }
+        }
+        if (piece.y - 1 == newY && piece.x + 1 == newX && Board.previousBoard[piece.y - 2][piece.x + 1].value != 0) {
+            if (Board.previousBoard[piece.y - 2][piece.x + 1].value == -1) {
+                if (Board.pieces[newY + 1][newX].value < 0)
+                    Board.pieces[newY + 1][newX].value = 0;
+                return true;
+            }
+        }
+    }
+
+    if (piece.y - 1 == newY && piece.x - 1 == newX && Board.pieces[piece.y - 1][piece.x - 1].value != 0)
+        return true;
+    if (piece.y - 1 == newY && piece.x + 1 == newX && Board.pieces[piece.y - 1][piece.x + 1].value != 0)
+        return true;        
+
+    if (piece.x !== newX) 
+        return false;
+    if (Board.pieces[piece.y - 1][piece.x].value != 0)
+        return false;
+    if (piece.y - 1 === newY)
+        return true;
+    if (piece.y - 2 == newY && newY == 4 && Board.pieces[piece.y - 2][piece.x].value === 0)
+        return true;
+    return false;
+}
+```
+
+So that first if statement is for en passant.
+In short, if the previous board had a pawn and that pawn moved two squares then we can capture that pawn.
+After that we check if the pawn has captured normally by checking if the pieces `y` has been decreased by one and if the `x` has been decreased/increased by one and if there is a piece available to capture it that spot.
+After that we know that the pawn must stay on its `x` so if it is not then we return `false`.
+Then if the square in front of the pawn is occupied by another piece then we return `false`.
+After that we check if the pawn is moving one square.
+Then after that we check if the pawn has moved two squares and is moving from its original position, along with checking if a piece is occupied by another piece.
+
+The piece validation for black pawns is the exact same, but reversed, so I won't be going to explain that.
+
 ---
