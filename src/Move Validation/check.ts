@@ -2,7 +2,7 @@ class Check {
     public static squareBeingAttackedByBlackPiece(squareX: number, squareY: number, board: Piece[][]): boolean {
         for (const array of board)
             for (const piece of array)
-                if (piece.value > 0)
+                if (piece.value < 0)
                     switch (piece.value) {
                         case -1:
                             return Move.validBlackPawnCapture(piece, squareX, squareY);

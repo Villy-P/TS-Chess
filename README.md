@@ -1313,5 +1313,408 @@ After that we check if the pawn is moving one square.
 Then after that we check if the pawn has moved two squares and is moving from its original position, along with checking if a piece is occupied by another piece.
 
 The piece validation for black pawns is the exact same, but reversed, so I won't be going to explain that.
+We also have two functions that check if a pawn can capture, which just takes some code from our `validWhitePawnMove` function.
+
+After that we have our valid rook movements:
+
+``` typescript
+public static validRookMove(piece: Piece, newX: number, newY: number) {
+    if (piece.x !== newX && piece.y !== newY) 
+        return false
+    if (piece.y === newY) {
+        if (piece.x < newX) {
+            for (let i = piece.x + 1; i < newX; ++i) 
+                if (Board.pieces[piece.y][i].value != 0)
+                    return false;
+        } else {
+            for (let i = piece.x - 1; i > newX; i--)
+                if (Board.pieces[piece.y][i].value != 0)
+                    return false;
+        }
+    } else if (piece.x === newX) {
+        if (piece.y < newY) {
+            for (let i = piece.y + 1; i < newY; ++i)
+                if (Board.pieces[i][piece.x].value != 0)
+                    return false;
+        } else {
+            for (let i = piece.y - 1; i > newY; i--)
+                if (Board.pieces[i][piece.x].value != 0)
+                    return false
+        }
+    } else {
+        return false;
+    }
+    if (piece.x == 0 && piece.y == 7)
+        Move.whiteLeftRookMoved = true;
+    if (piece.x == 7 && piece.y == 7)
+        Move.whiteRightRookMoved = true;
+    if (piece.x == 0 && piece.y == 0)
+        Move.blackLeftRookMoved = true;
+    if (piece.x == 0 && piece.y == 7)
+        Move.blackRightRookMoved = true;
+    return true;
+}
+```
+
+So first we check if the rook's `y` and `x` is different then its `newX` and `newY`.
+If so, the rook is trying to move diagonally, so we reject that move.
+Then we have a block of code that, in short, goes in every direction and if there is a piece blocking the way, return `false`.
+Then we check the rook's coordinates and assign variables to true if the rook has moved.
+Then we return `true` because the rook has made a valid move.
+
+Next we do knight moves:
+
+``` typescript
+public static validKnightMove(piece: Piece, newX: number, newY: number): boolean {
+    if (piece.y - 2 === newY && (piece.x + 1 === newX || piece.x - 1 === newX))
+        return true;
+    if (piece.y + 2 === newY && (piece.x + 1 === newX || piece.x - 1 === newX))
+        return true;
+    if (piece.y - 1 === newY && (piece.x + 2 === newX || piece.x - 2 === newX))
+        return true;
+    if (piece.y + 1 === newY && (piece.x + 2 === newX || piece.x - 2 === newX))
+        return true;
+    return false;
+}
+```
+
+A knight's move is very easy, as it can jump over pieces.
+Here we just check if it has moved to one of the eight valid squares around it.
+If so return `true`.
+If all cases return `false`, then just return `false`.
+You may be thinking that a knight can just move outside of the board because we have no check for that.
+We will fix that problem for *all* pieces eventually.
+
+Next is bishops:
+
+``` typescript
+public static validBishopMove(piece: Piece, newX: number, newY: number): boolean {
+    // Down-Right
+    if (newX > piece.x && newY > piece.y)
+        for (let i = 1; i < Math.max(newX - piece.x, newY - piece.y); i++)
+            if (!(piece.y + i < 0 || piece.y + i > 7 || piece.x + i < 0 || piece.x + i > 7))
+                if (Board.pieces[piece.y + i][piece.x + i] != undefined)
+                    if (Board.pieces[piece.y + i][piece.x + i].value != 0)
+                        return false;
+    // Up-Left
+    if (newX < piece.x && newY < piece.y)
+        for (let i = 1; i < Math.max(piece.x - newX, piece.y - newY); i++)
+            if (!(piece.y - i < 0 || piece.y - i > 7 || piece.x - i < 0 || piece.x - i > 7))
+                if (Board.pieces[piece.y - i][piece.x - i] != undefined)
+                    if (Board.pieces[piece.y - i][piece.x - i].value != 0)
+                        return false;
+    // Down-Left
+    if (newX < piece.x && newY > piece.y)
+        for (let i = 1; i < Math.max(piece.x - newX, newY - piece.y); i++)
+            if (!(piece.y + i < 0 || piece.y + i > 7 || piece.x - i < 0 || piece.x - i > 7))
+                if (Board.pieces[piece.y + i][piece.x - i] != undefined)
+                    if (Board.pieces[piece.y + i][piece.x - i].value != 0)
+                        return false;
+    // Up-Right
+    if (newX > piece.x && newY < piece.y)
+        for (let i = 1; i < Math.max(newX - piece.x, piece.y - newY); i++)
+            if (!(piece.y - i < 0 || piece.y - i > 7 || piece.x + i < 0 || piece.x + i > 7))
+                if (Board.pieces[piece.y - i][piece.x + i] != undefined)
+                    if (Board.pieces[piece.y - i][piece.x + i].value != 0)
+                        return false;
+    return Math.abs(newX - piece.x) == Math.abs(newY - piece.y);
+}
+```
+
+For each direction the bishop can move, we check if a square is being occupied.
+If it is occupied, then return `false`.
+If not, then we can check if the bishop moved diagonally by using the formula shown above.
+
+Up next is the Queen:
+
+``` typescript
+public static validQueenMove(piece: Piece, newX: number, newY: number): boolean {
+    if (Move.validBishopMove(piece, newX, newY) || Move.validRookMove(piece, newX, newY))
+        return true;
+    return false;
+}
+```
+
+Now, this code is very short.
+This is because we can check if the move is a valid rook move or bishop move due to the fact that a Queen is a combination of the rook and bishop's moveset.
+
+Next up is the King:
+
+``` typescript
+public static validWhiteKingMove(piece: Piece, newX: number, newY: number): boolean {
+    if (
+        newY === piece.y && 
+        piece.x + 2 === newX && 
+        !Move.whiteRightRookMoved && 
+        !Move.whiteKingMoved && 
+        Board.pieces[piece.y][piece.x + 1].value == 0 &&
+        !Check.squareBeingAttackedByBlackPiece(piece.x, piece.y, Board.pieces) &&
+        !Check.squareBeingAttackedByBlackPiece(piece.x + 1, piece.y, Board.pieces) &&
+        !Check.squareBeingAttackedByBlackPiece(piece.x + 2, piece.y, Board.pieces)
+    ) {
+        Move.whiteKingMoved = true;
+        Move.whiteRightRookMoved = true;
+        Board.pieces[piece.y][piece.x + 1] = Board.pieces[piece.y][piece.x + 3];
+        Board.pieces[piece.y][piece.x + 1].x = piece.x + 1;
+        Board.pieces[piece.y][piece.x + 1].y = piece.y;
+        Board.pieces[piece.y][piece.x + 3] = new Piece(0, piece.x + 3, piece.y);
+        return true;
+    }
+    if (
+        newY === piece.y &&
+        piece.x - 2 === newX &&
+        !Move.whiteLeftRookMoved &&
+        !Move.whiteKingMoved &&
+        Board.pieces[piece.y][piece.x - 1].value == 0 &&
+        Board.pieces[piece.y][piece.x - 3].value == 0 &&
+        !Check.squareBeingAttackedByBlackPiece(piece.x, piece.y, Board.pieces) &&
+        !Check.squareBeingAttackedByBlackPiece(piece.x - 1, piece.y, Board.pieces) &&
+        !Check.squareBeingAttackedByBlackPiece(piece.x - 2, piece.y, Board.pieces)
+    ) {
+        Move.whiteKingMoved = true;
+        Move.whiteLeftRookMoved = true;
+        Board.pieces[piece.y][piece.x - 1] = Board.pieces[piece.y][piece.x - 4];
+        Board.pieces[piece.y][piece.x - 1].x = piece.x - 1;
+        Board.pieces[piece.y][piece.x - 1].y = piece.y;
+        Board.pieces[piece.y][piece.x - 4] = new Piece(0, piece.x - 4, piece.y);
+        return true;
+    }
+    if (newX > piece.x + 1 || newX < piece.x - 1 || newY > piece.y + 1 || newY < piece.y - 1)
+        return false;
+    Move.whiteKingMoved = true;
+    Move.whiteRightRookMoved = true;
+    return true;
+}
+```
+
+The whole complicated mess of two `if` statements is for castling.
+This is how the works:
+
+- Is the King moving two squares in one direction?
+- Has the King or Rook not moved?
+- Are there no pieces in the way?
+- Are none of the squares being attacked by a black piece?
+- If all of these are `true` then:
+  - The white King has moved
+  - The white Rook has moved
+  - Move the King and Rook
+  - Return true
+
+If the king has not castled, then we just check if the king has moved more than one square.
+If he has, return `false`, otherwise set the white king as having moved.
+Then return `true`.
+
+The black king code is the same, however inversed, so I won't go over it.
+
+### The Piece file
+
+The `piece.ts` file is also really large, so we'll split it up.
+
+First things first, we declare some class variables:
+
+``` typescript
+public value: number;
+public x: number;
+public y: number;
+public dx: number = 0;
+public dy: number = 0;
+public hasMoved: boolean = false;
+public selected: boolean = false;
+```
+
+The value is determined like this:
+
+| Piece           | Value                                       |
+|-----------------|---------------------------------------------|
+| White Pawn      | 1                                           |
+| White Knight    | 2                                           |
+| White Bishop    | 3                                           |
+| White Rook      | 4                                           |
+| White Queen     | 5                                           |
+| White King      | 6                                           |
+| Any black piece | Negative value of corresponding white piece |
+
+`x` and `y` are essentially equivalent to `file` and `rank`.
+
+`dx` and `dy` are used for drag and drop mechanics, which we will get into when we get to `board.ts`.
+The `hasMoved` and `selected` variables are unused.
+
+Next we have piece identifiers:
+
+``` typescript
+public static pieceIdentifiers: Map<string, number> = new Map([
+    ['x', 0],
+    ['p', -1],
+    ['n', -2],
+    ['b', -3],
+    ['r', -4],
+    ['q', -5],
+    ['k', -6],
+    ['P', 1],
+    ['N', 2],
+    ['B', 3],
+    ['R', 4],
+    ['Q', 5],
+    ['K', 6]
+]);
+
+public static pieceNumberIdentifiers: Map<number, string> = new Map([
+    [0, 'x'],
+    [-1, 'p'],
+    [-2, 'n'],
+    [-3, 'b'],
+    [-4, 'r'],
+    [-5, 'q'],
+    [-6, 'k'],
+    [1, 'P'],
+    [2, 'N'],
+    [3, 'B'],
+    [4, 'R'],
+    [5, 'Q'],
+    [6, 'K'],
+]);
+```
+
+The first `hashmap` is used to convert FEN string piece identifiers to numbers, and the second `hashmap` is used to inverse that.
+
+Now a `Map` (Also called `HashMap` or `Dictionary`) is a simple object:
+
+`key`: `object`
+
+So if you had this `HashMap`:
+
+``` typescript
+let map: Map<string, number> = new map([
+    ["key", 10]
+]);
+
+console.log(map.get("key"));
+```
+
+This would print 10, because the value of `key` is 10.
+
+Now, `Map`s may *look* simple, but they are extremely complicated.
+
+Take this C code for example:
+
+``` c
+#include <stdio.h>
+
+int main() {
+    int a = 0;
+    printf("%p\n", (void *)&a);
+
+    return 0;
+}
+```
+
+This code creates an `int` value assigned 0;
+
+Now what do you think this prints?
+
+It prints *the address of a*.
+This is what it returned on my computer: `0x7ffcd9b18f94`
+
+Your computer has memory, so whenever you create a new variable, it allocates a location in memory for that value.
+
+Take this C code:
+
+``` c
+#include <stdio.h>
+
+int main() {
+    int a = 0;
+    int b = 0;
+    printf("%p\n", (void *)&a);
+    printf("%p\n", (void *)&b);
+
+    return 0;
+}
+```
+
+Here we have another variable named `b`.
+
+Now this is what it prints:
+
+``` text
+0x7fffac4debb0
+0x7fffac4debb4
+```
+
+Now you can see the pointer value of `b` is 4 more than that of `a`.
+This is because an int is 4 bytes, which is a term you may have heard before.
+
+Now change `a` and `b` to `char` (character):
+
+``` c
+#include <stdio.h>
+
+int main() {
+    char a = 'b';
+    char b = 'b';
+    printf("%p\n", (void *)&a);
+    printf("%p\n", (void *)&b);
+
+    return 0;
+}
+```
+
+This is what that prints:
+
+``` text
+0x7ffeb66d3c96
+0x7ffeb66d3c97
+```
+
+A `char`'s size is 1 bit, so the memory is increased by 1.
+
+This is better showed with an array:
+
+``` c
+#include <stdio.h>
+
+int main() {
+    int a[] = {1, 2, 3};
+    for (int i = 0; i < 3; i++)
+        printf("Address #%d: %p\n", i, (void *)&a[i]);
+    return 0;
+}
+```
+
+This is what this returns:
+
+``` text
+Address #0: 0x7ffcbc0f9c3c
+Address #1: 0x7ffcbc0f9c40
+Address #2: 0x7ffcbc0f9c44
+```
+
+When we initialize an array, it gets the length and allocates memory for the array.
+As, you can see in the example above, each value goes up by 4 (ignore Address #0).
+
+Now this becomes a problem when you get into dynamic arrays.
+Dynamic arrays are arrays that can be modified after being initialized.
+
+Such example's are:
+
+``` text
+Java: ArrayList<>
+C#: List<>
+C++: std::vector<>
+Python: []
+Ruby: {}
+```
+
+This is a problem because if you add a value to a dynamic array, there is a chance that the next item in memory is taken.
+So now, during garbage collection (where the computer frees up memory), the array will have to relocated, which takes up precious time.
+
+Now, for `HashMap`'s, JavaScript has to `hash` the variables.
+
+When you create a new `key` it gets assigned to a value in memory and has a pointer to the `value` you gave it.
+Now, `value`s may overlap, so in that case, it becomes a linked list.
+
+C pointers are very complicated and the best way to learn more about them is to read up on hashing and pointers.
+
+Back to our actual code, we have created a `HashMap`
 
 ---
