@@ -1029,4 +1029,204 @@ array.pop();
 array[4];
 ```
 
+We now make a constructor that just initializes the `height` and `width` properties of our `canvas`.
+After that we make a function that adds a component to the list.
+It starts by adding 20 to the `canvas` height.
+Then it pushes the provided `HistoryComponent` to the `components` list.
+
+Then we have a function that prints the history components to the history canvas.
+You can notice that after the parenthesis and before the curly brace, there is a `: void`.
+The specifies what the function will return.
+`void` means that the function will return nothing.
+
+The first thing we do in our `print()` function is call a method within the `Functions` class that draws a line.
+I won't be going over the `functions.ts` file but I will explain the methods when we see them.
+This is `Functions.drawLine` method:
+
+``` typescript
+// I spaced out the parameters so they will be more clear.
+public static drawLine(
+    x1: number, 
+    y1: number, 
+    x2: number, 
+    y2: number, 
+    width: number = .5, 
+    context: CanvasRenderingContext2D
+): void {
+    context.beginPath();
+    context.lineWidth = width;
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.stroke();
+}
+```
+
+Our parameter names speak for themselves, so I won't go over them.
+One parameter, `width` has a value preset, so if we don't pass in a width (or pass in `undefined`), then it will default to .5.
+
+The `context.beginPath()` function starts the process of drawing a line.
+Then, `context.lineWidth()` will be used to set the thickness of the line.
+After that, we move the "cursor" to `x1, x2` with the `moveTo()` function.
+Then we move the cursor to `y1, y2` with the `lineTo()` function.
+`lineTo()` will also draw a line from wherever the cursor was to where is will be.
+`stroke` finally displays the line.
+
+Back to our `print()` method, we draw two lines splitting the canvas into three parts:
+
+1. The number
+2. White's move
+3. Black's move (unimplemented)
+
+Next we have a `for` loop. Here is an example of `for` loops:
+
+``` typescript
+// Create a new value called i
+// Then do everything within the braces
+// Add 1 (i++) to i
+// If i is less than 5 then stop.
+for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+// The final result will be this:
+
+// 0
+// 1
+// 2
+// 3
+// 4
+```
+
+So, in our `for` loop, we do things as long as `i` is less than the length of `this.components`.
+Now, for each `component`, we can draw the number and what white played.
+We also call `Functions.drawText()`.
+Here it is:
+
+``` typescript
+public static drawText(
+    text: string, 
+    x: number, 
+    y: number, 
+    color: string = "black", 
+    font: string = "Arial", 
+    fontSize: number = 10, 
+    textBaseline: string = "left", 
+    textAlign: string = "left", 
+    context: CanvasRenderingContext2D
+) {
+    context.fillStyle = color;
+    context.font = `${fontSize}px ${font}`;
+    context.textBaseline = <CanvasTextBaseline> textBaseline; 
+    context.textAlign = <CanvasTextAlign> textAlign; 
+    
+    context.fillText(text, x, y);
+}
+```
+
+Now here, most parameters are self explanitory, however there is `textBaseline` and `textAlign`.
+
+- `textBaseline`
+  - This controls where the text is positioned vertically. If we set this top `top` it will draw the text below the `x` value.
+- `textAlign`
+  - Same as `textBaseline` but horizontally.
+
+First we set the `fillStyle` attribute of the context.
+This sets the color of the text to whatever we provided.
+Then we set the font using a format string.
+A format string uses \`backticks\`.
+Whenever we use `${}` in a format string, we can use variables within the braces.
+Then we set the `textBaseline` and `textAlign` attributes.
+
+After that, we draw the text using `fillText`.
+
+We will call `print()` later.
+For now let us move on to the actual chess.
+
+### The FenHandling file
+
+Here is the `fenHandling.ts` file:
+
+``` typescript
+class FenHandling {
+    public static readonly startWhiteFenString: string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+    public static fillBoardFromFEN(fen: string): void {
+        Board.pieces = [];
+        Board.createEmptyBoard();
+        const FENSTRING = fen.split(' ');
+        let file: number = 0;
+        let rank: number = 0;
+        for (const char of FENSTRING[0].split("")) {
+            if (char === '/') {
+                file = 0;
+                rank++;
+            } else {
+                if (!Number.isNaN(Number(char))) {
+                    file += parseInt(char);
+                } else {
+                    Board.pieces[rank][file] = new Piece(Piece.pieceIdentifiers.get(char)!, file, rank);
+                    file++;
+                }
+            }
+        }
+    }
+
+    public static loadFENFromPosition(board: Piece[][]): string {
+        let fen: string = "";
+        for (const array of board) {
+            let emptySquares: number = 0;
+            for (const piece of array) {
+                if (piece.value === 0) {
+                    emptySquares++;
+                } else {
+                    if (emptySquares != 0) {
+                        fen += emptySquares;
+                        emptySquares = 0;
+                    }
+                    if (piece.value != 0)
+                        fen += piece.value.toString();
+                }
+            }
+            if (emptySquares != 0)
+                fen += emptySquares;
+            fen += '/';
+        }
+        fen = fen.slice(0, -1);
+
+        fen += " w KQkq - 0 1"
+        return fen;
+    }
+}
+```
+
+Now that first variable may seem very confusing to you.
+That is what is called a FEN String.
+FEN stands for Forsyth–Edwards Notation, named after Scottish newspaper David Forsyth.
+Here are the parts of a FEN String and a table to acompany them:
+
+- Placement data
+  - Calculate the position of the pieces on a square. Take this FEN string: `1n1rk3/pR6/8/B2p1p2/4n3/2N2b2/PP5P/2KR4`
+    - First we move one sqare, then place a black knight, then move one square, place a black rook and then a black king, then skip three squares and go down a rank. After that place a black pawn, the a white rook, then skip six squares and go down a rank. Then skip eight squares and go down a rank, then place a white bishop, skip two squares, place a black pawn, skip a square, and then place a black pawn, then skip two sqaures and go down a rank. Then Skip four squares and place a black knight then skip three squares and go down a rank. Then skip two squares and place a white knight then skip teo squares then add a black bishop then skip two squares and go down a rank. After that place two white pawns and skip five squares and place a white pawn then go down a rank. Finally, skip two squares, place a white king, a white rook, then skip 4 squares.
+- Player to move
+  - `w` for white, `b` for black.
+- Castling
+  - If neither side can castle, this is `-`.
+  - If white can castle kingside, a `K` is added.
+  - If white can castle queenside, a `Q` is added.
+  - If black can castle kingside, a `k` is added.
+  - If black can castle queenside, a `q` is added.
+- En passant target square
+  - If the previous move was not a pawn or a pawn not moving two squares, this is `-`.
+  - If it was, than this will be the square that the pawn moved over (If the king pawn moved to e4 than this will be e3).
+- 50 move rule clock
+  - A number indicated by the number of moves since a capture or pawn movement. This is for the 50 move draw rule.
+- Full move counter
+  - A number indicated by the number of moves played. Incremented by 1 after black has moved.
+
+| Character  | Description                                                      |
+|------------|------------------------------------------------------------------|
+| Any number | Skip that many squares                                           |
+| PRNBQK     | White piece of that type (N = Knight, K = King, Q = Queen, etc.) |
+| prnbqk     | Black piece of that type (n = Knight, k = King, q = Queen, etc.) |
+| /          | Go down one rank                                                 |
+
 ---
