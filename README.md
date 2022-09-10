@@ -1713,8 +1713,60 @@ Now, for `HashMap`'s, JavaScript has to `hash` the variables.
 When you create a new `key` it gets assigned to a value in memory and has a pointer to the `value` you gave it.
 Now, `value`s may overlap, so in that case, it becomes a linked list.
 
-C pointers are very complicated and the best way to learn more about them is to read up on hashing and pointers.
+C pointers are very complicated and the best way to learn more about them is to read up on hashing and pointers and to just work with c (or x86 assembly).
 
-Back to our actual code, we have created a `HashMap`
+Back to our actual code, we have created two `HashMap`s.
+
+Next we have our `constructor` which assigns values to our class variables.
+
+Now we have this code:
+
+``` typescript
+public static getImageUrlFromFEN(fenUnit: number): string {
+    let url: string = UserSettings.fileBeginning;
+    switch (fenUnit) {
+        case 1:  url += "WhitePawn";    break;
+        case -1: url += "BlackPawn";    break;
+        case 4:  url += "WhiteRook";    break;
+        case -4: url += "BlackRook";    break;
+        case 2:  url += "WhiteKnight";  break;
+        case -2: url += "BlackKnight";  break;
+        case 3:  url += "WhiteBishop";  break;
+        case -3: url += "BlackBishop";  break;
+        case 5:  url += "WhiteQueen";   break;
+        case -5: url += "BlackQueen";   break;
+        case 6:  url += "WhiteKing";    break;
+        case -6: url += "BlackKing";    break;
+    }
+    return url + ".png";
+}
+```
+
+This is used to get the image url in our files.
+All you really need to know about is `switch`.
+
+Here is an example of a switch statement:
+
+``` typescript
+let n: number = 1;
+
+// Get the value of n
+switch (n) {
+    case 0:                     // If it is zero
+        console.log("n is 0");  // log this
+        break;                  // If this break is not here, then the code will break through.
+    case 1:                    // If it is 1
+        console.log("n is 1"); // log this
+    case 2:
+        console.log("n!"); // log this
+}
+```
+
+So what this code will do is get the value of `n`.
+`n` is not 0, so we skip that case.
+`n` is 1, so we log "n is 1".
+Since there is no `break`, we go through to the next case which is 2 and log "n!".
+
+Any `s
 
 ---
