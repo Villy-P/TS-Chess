@@ -29,7 +29,7 @@ class Functions {
     }
 
     public static drawImage(src: string, x: number, y: number, width: number = 50, height: number = 50) {
-        const image = Functions.images.get(src)!;
+        const image: HTMLImageElement = Functions.images.get(src)!;
         World.context.drawImage(image, x, y, width, height);
     }
 

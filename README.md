@@ -2386,7 +2386,229 @@ First, we check if the pieces `x` plus the random value (or `y`) is off the boar
 If it is, we use the `continue` keyword to continue from the start of the `while` loop.
 Then if the piece will move onto another black piece, we `continue`.
 Then, if the piece is making a valid move, we `break` out of the loop.
-After we are out of the loop, we copy the king and see if it moved to a square that is being attacked.
-If so we return.
+After we are out of the loop, if we moved the king, we copy the king and see if it moved to a square that is being attacked.
+If so we `return`.
+Then we update the board and the `piecePick`s `x` and `y` accordingly.
+
+> *a += 1 is essentialy a = a + 1.*
+
+Ok, two more files.
+
+### The Key Events file
+
+Here is the `keyEvents.ts` file:
+
+``` ts
+class KeyEvents {
+    public static lastY: number = 0;
+    public static lastX: number = 0;
+
+    public static selectedPiece: Piece | null;
+
+    public static mouseIsDown: boolean = false;
+
+    public static mouseDown(e: MouseEvent): void {
+        e.preventDefault();
+        e.stopPropagation();
+        this.lastX = Functions.getMousePos(e).x;
+        this.lastY = Functions.getMousePos(e).y;
+        const mouseX: number = Math.floor(Functions.getMousePos(e).x / DevSettings.boxDimensions) - 1;
+        const mouseY: number = Math.floor(Functions.getMousePos(e).y / DevSettings.boxDimensions) - 1;
+        dance:
+        for (let file = 0; file < 8; file++)
+            for (let rank = 0; rank < 8; rank++)
+                if (file == mouseX && rank == mouseY) {
+                    if (Board.pieces[rank][file].value > 0)
+                        this.selectedPiece = Board.pieces[rank][file]!;
+                    break dance;
+                }
+        this.selectedPiece!.selected = true;
+        World.dragging = true;
+        this.mouseIsDown = true;
+    }
+
+    public static mouseUp(e: MouseEvent): void {
+        if (!World.dragging)
+            return;
+        e.preventDefault();
+        World.dragging = false;
+        this.selectedPiece!.move(e);
+        this.selectedPiece = null;
+    }
+
+    public static mouseMove(e: MouseEvent): void {
+        if (!World.dragging)
+            return;
+        e.preventDefault();
+        const mouseX: number = Functions.getMousePos(e).x;
+        const mouseY: number = Functions.getMousePos(e).y;
+
+        this.selectedPiece!.dx = mouseX - this.lastX;
+        this.selectedPiece!.dy = mouseY - this.lastY;
+    }
+}
+```
+
+First we make a bunch of variables.
+
+Next we have a function that occurs when we click the mouse.
+
+First we use `preventDefault` and `stopPropagation` to tell the browser that we will be handling the event.
+Next we get the current mouse position and map them to `lastX` and `lastY`.
+After that we have two constants that get the squares that the mouse is currently over.
+Next we loop over all the squares in the board and get the piece that the user is over.
+Then we set three variables to `true`.
+
+After that we deal with when the mouse goes up.
+If we are not currently dragging the mouse, then we `return`.
+If so we set `dragging` to `false` and move the selected piece.
+Then we set the selected piece to `null`.
+
+Finally, we deal with when the mouse moves.
+First off, if the mouse is not `dragging`, then we `return`.
+Next we get the current `mouseX` and `mouseY` values.
+Finally we set the `dx` and `dy` values.
+`dx` and `dy` are used to display the piece actually moving.
+
+### The initialization file
+
+The final file.
+This one will take a while.
+
+First off we make a `new World()`:
+
+``` ts
+const world: World = new World();
+```
+
+Simple.
+
+Now we have this function:
+
+``` ts
+async function main(): Promise<void> {
+    await Functions.loadImages();
+    world.board.drawBoard();
+}
+```
+
+This is an `async` function.
+
+Now, JavaScript has this weird thing that, if a process is taking too long, then it will skip that process and move on.
+When it feels like it, it will go back and finish up that process.
+What we need to do before the game loads is to load in the images.
+A normal image load in would look like this:
+
+``` js
+const image = new Image();
+image.src = "image_url.png";
+image.onload = () => {
+    context.drawImage(x, y, width, height);
+};
+```
+
+First we create the image, then assign it an `src`.
+After that, we wait for the image to load, and then we draw it.
+
+But if we did this in a function, even after the image is loaded, it will be loaded in over and over again because we create an image will each call.
+
+So, this is where we have this function:
+
+``` ts
+public static async loadImages(): Promise<void> {
+    const imageLinks: string[] = [
+        "images/Basic/BlackBishop.png",
+        "images/Basic/BlackKing.png",
+        "images/Basic/BlackKnight.png",
+        "images/Basic/BlackPawn.png",
+        "images/Basic/BlackQueen.png",
+        "images/Basic/BlackRook.png",
+        "images/Basic/WhiteBishop.png",
+        "images/Basic/WhiteKing.png",
+        "images/Basic/WhiteKnight.png",
+        "images/Basic/WhitePawn.png",
+        "images/Basic/WhiteQueen.png",
+        "images/Basic/WhiteRook.png",
+    ];
+
+    let loadImage = async (link: string) => {
+        const image: HTMLImageElement = new Image();
+        image.src = link;
+
+        
+        return new Promise((resolve) => {
+            image.onload = async () => {
+                Functions.images.set(link, image);
+                resolve(true);
+            };
+        });
+    };
+    
+    for (let i = 0; i < imageLinks.length; i++) {
+        await loadImage(imageLinks[i]);
+    }
+}
+```
+
+First we create an array of all the images we need to load in.
+Then we create a function (within a function) that loads in a single image.
+We first create the image and then give it an `src`.
+After that we return a new `Promise`.
+A `Promise` is an object that eventually will be resolved.
+We first load in the image.
+After we do that, we call the `set` method on a dictionary that we defined at the top:
+
+```ts
+public static images: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
+```
+
+`set()` creates a new object in the dictionary.
+The first argument will be the `key`, and the second one will be the `value`.
+So we set the link of the image to the image.
+Then we call `resolve(true)` to signify that the `Promise()` has been fufilled.
+Then we look over all the images and `await` a load in.
+`await` is used within an `async` function to stop all other processes and focus on whatever you are `await`ing.
+Then, we have our `drawImage()` function:
+
+``` ts
+public static drawImage(src: string, x: number, y: number, width: number = 50, height: number = 50) {
+    const image: HTMLImageElement = Functions.images.get(src)!;
+    World.context.drawImage(image, x, y, width, height);
+}
+```
+
+Now all we have to do is get the image from the `src`, and use the context to draw the image.
+We don't need to worry about the image not being loaded in because we dealt with that in our `init.ts` file.
+
+Now back to our `main()` function, we `await` the function that loads in all the images.
+Then we draw the board.
+
+Then we call that function.
+
+After that, we have a `run()` function:
+
+``` ts
+function run() {
+    world.board.drawBoard();
+    world.board.drawPieces();
+    World.history.context.clearRect(0, 0, World.history.canvas.width, World.history.canvas.height);
+    World.history.print();
+}
+```
+
+This first draw's the board, then the pieces, and then clears the history canvas and draws all the history components.
+
+Then we finally reach our last line of code:
+
+``` ts
+setInterval(run, 33);
+```
+
+This function will call the `run()` function every 33 milliseconds.
+We don't need the parenthesis in this case because we only need to reference it.
+
+And thats it!
+Thanks for reading all the way to the end.
+See you next time.
 
 ---

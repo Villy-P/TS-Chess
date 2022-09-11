@@ -156,7 +156,7 @@ class Piece {
                 alert("White King is in checkmate. Black has won the game!");
                 return;
             }
-            World.history.addComponent(new HistoryComponent(historyComponent, "WOW"));
+            World.history.addComponent(new HistoryComponent(historyComponent, ""));
         }
     }
     static getKing(isWhite, board) {
