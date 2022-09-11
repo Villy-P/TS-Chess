@@ -129,11 +129,11 @@ The `<div>` tag itself specifies a certain section of the webpage and it has a c
 Each item within the `<div>` tag has an `<a>` tag with a href of `"#"` (do nothing) and an `<input>` tag that specifies the type of input.
 We set the `type` attribute to `color` so the webpage knows we will be making a color selector.
 Then we give the base color value as a certain color value, which is a very fancy way of specifying different color (Like an RGBA value).
-The `#FFFFFF` color is white, specifyed by the 3 pairs of `FF`, which means full values of Red, Green, and White (255, 255, 255).
+The `#FFFFFF` color is white, specified by the 3 pairs of `FF`, which means full values of Red, Green, and White (255, 255, 255).
 Next we assign each value an `id` so we can access it in the TypeScript/JavaScript.
 The White Text is what we will actually be displaying to the user.
 
-When you look at the unordered list in the webpage it does not look like a list, but rathers a bar with dropdowns.
+When you look at the unordered list in the webpage it does not look like a list, but rather a bar with dropdowns.
 This is due to styling in CSS, which we will go over later.
 
 Next, we create two canvases with the `<canvas>` tag.
@@ -209,14 +209,14 @@ In this case we are setting the attributes of the main canvas where our chess ga
 
 The first tag (`background-color`) sets the background of the canvas to `cadetblue` (HTML can also read plain text as colors too).
 Then we set the `border` attribute to `1px solid black`.
-This sets the border of the canvas to be one pixel wide and have a boldened, black look to it.
+This sets the border of the canvas to be one pixel wide and have a bold, black look to it.
 The four next attributes have to do with setting the canvas to be centered on the screen.
 Lets look at each of them.
 
 - `position: absolute`
   - This means that the canvas will be positioned to be relative to the body. The next two properties will determine that.
 - `top: 50%`
-  - This sets the postition relative to the top to 50%. For example, if the screen was 1000px tall, then the canvas would be placed 500px away from the top.
+  - This sets the position relative to the top to 50%. For example, if the screen was 1000px tall, then the canvas would be placed 500px away from the top.
 - `left: 50%`
   - This sets the position relative to the left to 50%. For example, if the screen was 1000px wide, then the canvas would be placed 500px away from the left.
 - The two properties above cause the canvas to shift to the middle of the screen, however the top left corner of the screen will be at the center, so we will need to place the center of the canvas to the center of the screen.
@@ -410,7 +410,7 @@ This project uses Git and Github to help track when changes were made and revert
 > *You can skip this part if you are not interested in Git*
 
 Visit [this](https://git-scm.com/downloads) website and install Git.
-Next, follow all the instuctions in the installer.
+Next, follow all the instructions in the installer.
 Once you are finished you need to add GIT to your path. Click on the windows button on your keyboard and type in "PATH".
 After that click on the "Edit the system environment variables."
 Then click the button that says "Environment variables."
@@ -423,7 +423,7 @@ The reason we put Git on our path is so we an use the `git` command in the comma
 Press Windows Key + R on your keyboard to open "Run." Then type in `cmd`.
 You are now in your command line.
 
-> Another option is to use Windows Powershell, which comes intalled on your computer.
+> Another option is to use Windows Powershell, which comes installed on your computer.
 
 Whenever you open the command line it should look like this:
 
@@ -493,7 +493,7 @@ To set up Git for you, type in these commands:
 > git config --global user.email "email@provider.com"
 ```
 
-This configurates Git for you specifically.
+This configures Git for you specifically.
 
 In order to make Git easier go to [Github](https://github.com/) and sign up.
 Then click on the plus sign in the top right and create a new repository.
@@ -584,7 +584,7 @@ console.log(point.y);
 ```
 
 The first `console.log` will log `100` but the second one `undefined` because point.y does not exist.
-This is unexpected behavior and defiently something we don't want.
+This is unexpected behavior and defiantly something we don't want.
 This is that same code in C++:
 
 ``` cpp
@@ -652,7 +652,7 @@ It also adds all these things:
 
 - Generics
 - Namespaces
-- Intefaces
+- Interfaces
 - Union Types
 
 Here is how the code above would work in TypeScript:
@@ -669,13 +669,13 @@ To fix this, we can do two things.
 ``` javascript
 // Option 1: Give variable type any
 let variable: any = "variable"; // Variable is an string.
-variable = 0; // Varaible is a number
+variable = 0; // Variable is a number
 variable = false; // Variable is a boolean
 console.log(variable); // Prints false
 
 // Option 2: Use Union Types
 
-// varaible has three types that can be assigned to it 
+// variable has three types that can be assigned to it 
 let variable: string | number | boolean = "variable"; // Variable is an string.
 variable = 0; // Variable is a number
 variable = false; // Variable is a boolean
@@ -794,9 +794,9 @@ We set the value of `World.canvas` to `document.getElementById("mainCanvas")`. H
 Next, we create the `context` of the `canvas`.
 The `context` will be used to draw shapes and text to the canvas.
 Whenever we call `getContext` on a canvas, it has a chance to return `null`, which is the German word for zero, because it does not know that the canvas has a context.
-We can put a `!` after the value to tell the compiler that *I, the developer have specifically checked this variable and have confermed that it does not equal null*.
+We can put a `!` after the value to tell the compiler that *I, the developer have specifically checked this variable and have confirmed that it does not equal null*.
 
-Next we get the bounding rectangle of the canvas by calling `World.cavas.getBoundingClientRect()`.
+Next we get the bounding rectangle of the canvas by calling `World.canvas.getBoundingClientRect()`.
 This gets the position of the canvas relative to the body.
 We use this later to get info about where the user clicked their mouse.
 
@@ -817,7 +817,7 @@ For example, we have this program (in C#)::
 
 ``` csharp
 public class Item {
-  // In most languages, constructros are made by using the class name as a function. Javascript used the constructor keyword.
+  // In most languages, constructors are made by using the class name as a function. Javascript used the constructor keyword.
   public Item() {
     Console.WriteLine("Constructor Called");
   }
@@ -853,7 +853,7 @@ We calculate the width and height, and then we set some more properties.
 We'll go over the values later, but what this does is it maps functions to events.
 So when the mouse goes down, it calls `KeyEvents.mouseDown()` (We don't need the parenthesis).
 
-Now that we have finished the `main.ts` file, we should go into some of the UI files before getting into the actuall chess game.
+Now that we have finished the `main.ts` file, we should go into some of the UI files before getting into the actual chess game.
 
 ### The ColorInput.ts file
 
@@ -915,7 +915,7 @@ These color wells are what you see when you hover over the `Colors` icon in the 
 This file will be used to facilitate everything with those color wells.
 
 Next, we have our constructors.
-For each of our color wells, we add an event listiner too them.
+For each of our color wells, we add an event listener too them.
 addEventListener has two arguments, and here they are:
 
 - `type`
@@ -1021,9 +1021,9 @@ array.pop();
 // ["String1", "String2", "String3", "String4", "String5", "String6", "String7", "String8"]
 // We can call values by their index.
 // In TypeScript and JavaScript, arrays start at index 0.
-// Here is a visulaization:
+// Here is a visualization:
 
-// ["bannana", "squash", "carrot"]
+// ["banana", "squash", "carrot"]
 //     ^          ^          ^
 //   Index 0     Index 1    Index 2
 
@@ -1124,7 +1124,7 @@ public static drawText(
 }
 ```
 
-Now here, most parameters are self explanitory, however there is `textBaseline` and `textAlign`.
+Now here, most parameters are self explanatory, however there is `textBaseline` and `textAlign`.
 
 - `textBaseline`
   - This controls where the text is positioned vertically. If we set this top `top` it will draw the text below the `x` value.
@@ -1203,11 +1203,11 @@ class FenHandling {
 Now that first variable may seem very confusing to you.
 That is what is called a FEN String.
 FEN stands for Forsyth–Edwards Notation, named after Scottish newspaper David Forsyth.
-Here are the parts of a FEN String and a table to acompany them:
+Here are the parts of a FEN String and a table to accompany them:
 
 - Placement data
   - Calculate the position of the pieces on a square. Take this FEN string: `1n1rk3/pR6/8/B2p1p2/4n3/2N2b2/PP5P/2KR4`
-    - First we move one sqare, then place a black knight, then move one square, place a black rook and then a black king, then skip three squares and go down a rank. After that place a black pawn, the a white rook, then skip six squares and go down a rank. Then skip eight squares and go down a rank, then place a white bishop, skip two squares, place a black pawn, skip a square, and then place a black pawn, then skip two sqaures and go down a rank. Then Skip four squares and place a black knight then skip three squares and go down a rank. Then skip two squares and place a white knight then skip teo squares then add a black bishop then skip two squares and go down a rank. After that place two white pawns and skip five squares and place a white pawn then go down a rank. Finally, skip two squares, place a white king, a white rook, then skip 4 squares.
+    - First we move one square, then place a black knight, then move one square, place a black rook and then a black king, then skip three squares and go down a rank. After that place a black pawn, the a white rook, then skip six squares and go down a rank. Then skip eight squares and go down a rank, then place a white bishop, skip two squares, place a black pawn, skip a square, and then place a black pawn, then skip two squares and go down a rank. Then Skip four squares and place a black knight then skip three squares and go down a rank. Then skip two squares and place a white knight then skip teo squares then add a black bishop then skip two squares and go down a rank. After that place two white pawns and skip five squares and place a white pawn then go down a rank. Finally, skip two squares, place a white king, a white rook, then skip 4 squares.
 - Player to move
   - `w` for white, `b` for black.
 - Castling
@@ -1438,7 +1438,7 @@ public static validQueenMove(piece: Piece, newX: number, newY: number): boolean 
 ```
 
 Now, this code is very short.
-This is because we can check if the move is a valid rook move or bishop move due to the fact that a Queen is a combination of the rook and bishop's moveset.
+This is because we can check if the move is a valid rook move or bishop move due to the fact that a Queen is a combination of the rook and bishop's moves.
 
 Next up is the King:
 
@@ -1506,7 +1506,7 @@ If the king has not castled, then we just check if the king has moved more than 
 If he has, return `false`, otherwise set the white king as having moved.
 Then return `true`.
 
-The black king code is the same, however inversed, so I won't go over it.
+The black king code is the same, however inverted, so I won't go over it.
 
 ### The Piece file
 
@@ -1796,7 +1796,7 @@ This is for getting a promotion for a white pawn.
 
 First we check if the piece is on the last square and is a white pawn.
 Then we get the player's input using the `prompt()` function.
-You can test the `prompt()` function by opening the Dev Tools window (Ctrl+Shift+I), going to `Console` and then typeing in `prompt()`. You should see something like this:
+You can test the `prompt()` function by opening the Dev Tools window (Ctrl+Shift+I), going to `Console` and then typing in `prompt()`. You should see something like this:
 
 ``` text
 ╔═══════════════════════════╗
@@ -1851,7 +1851,7 @@ public static getValidMove(piece: Piece, newX: number, newY: number): boolean {
 Here we switch the pieces value and check if the piece's move is valid.
 The `throw new Error` at the end is there because if the piece's value is not in the range of `-6` to `6` then we know something is wrong, so we throw an error.
 
-After that we have a functions that inverts a number, but that is pretty self-explanitory.
+After that we have a functions that inverts a number, but that is pretty self-explanatory.
 
 Alright, then we have this block of code:
 
@@ -2155,7 +2155,7 @@ If we can legally move to that square, then we create a deep copy of the board a
 If the king is no longer in check, we return `false`.
 If all the white pieces can't do anything, we return `true`.
 
-The smae function is used for `blackKingInCheckMate` but inversed.
+The same function is used for `blackKingInCheckMate` but inverted.
 
 ### The Black File
 
@@ -2291,8 +2291,8 @@ But that should be impossible.
 Think about it.
 Can computers generate random numbers?
 They really can't.
-Whenever you ask Siri "Generate a random number betweeen 0 and 50, she isn't giving you a *random* number, but rather a *psuedo-random* number.
-Psuedo-random numbers are generated using very complex formulas.
+Whenever you ask Siri "Generate a random number between 0 and 50, she isn't giving you a *random* number, but rather a *pseudo-random* number.
+Pseudo-random numbers are generated using very complex formulas.
 Here is a simple example.
 
 In JavaScript, there is a function called `Date.now()` which returns a very large number.
@@ -2565,7 +2565,7 @@ public static images: Map<string, HTMLImageElement> = new Map<string, HTMLImageE
 `set()` creates a new object in the dictionary.
 The first argument will be the `key`, and the second one will be the `value`.
 So we set the link of the image to the image.
-Then we call `resolve(true)` to signify that the `Promise()` has been fufilled.
+Then we call `resolve(true)` to signify that the `Promise()` has been fulfilled.
 Then we look over all the images and `await` a load in.
 `await` is used within an `async` function to stop all other processes and focus on whatever you are `await`ing.
 Then, we have our `drawImage()` function:
