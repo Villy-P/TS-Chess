@@ -18,6 +18,8 @@ Chess game in TypeScript. For Logic class
 
 [SebLague](https://github.com/SebLague) for some FEN handling.
 
+[Mozilla Web Docs](https://developer.mozilla.org/en-US/) for JS functions.
+
 ---
 
 ## Languages Used
@@ -2049,6 +2051,342 @@ public drawBoard(): void {
 }
 ```
 
-Here we loop over 
+Here we loop over each `file` and `rank` then check if the square is white or not.
+The `const` keyword is like the `readonly` keyword.
+The `%` (mod) operator is used to find the remainder of a division problem.
+Then we get the square color with a `ternary`.
+After that we calculate the `x` and `y` positions, then draw a rectangle.
+After both loops we draw a rectangle, but with only the border.
+
+Next we have a function that draws the pieces:
+
+``` ts
+public drawPieces(): void {
+    for (let file = 0; file < 8; file++) {
+        for (let rank = 0; rank < 8; rank++) {
+            const piece: Piece = Board.pieces[rank][file];
+            if (piece.value !== 0)
+                Functions.drawImage(
+                    Piece.getImageUrlFromFEN(piece.value), 
+                    (piece.x * (DevSettings.numberLetterDimensions + 1)) + DevSettings.numberLetterDimensions + piece.dx,
+                    (piece.y * (DevSettings.numberLetterDimensions + 1)) + DevSettings.numberLetterDimensions + piece.dy,
+                    DevSettings.pieceDimensions, 
+                    DevSettings.pieceDimensions
+                );
+        }
+    }
+}
+```
+
+This is almost the same as the `drawBoard` function but we are drawing pieces instead.
+We'll go over the `Functions.drawImage` function later as it is very complicated.
+
+### The Check File
+
+First of we have a function that checks if a certain square is being attacked by a black piece:
+
+``` ts
+public static squareBeingAttackedByBlackPiece(squareX: number, squareY: number, board: Piece[][]): boolean {
+    for (const array of board)
+        for (const piece of array)
+            if (piece.value < 0)
+                switch (piece.value) {
+                    case -1:
+                        return Move.validBlackPawnCapture(piece, squareX, squareY);
+                    case -2:
+                        return Move.validKnightMove(piece, squareX, squareY);
+                    case -3:
+                        return Move.validBishopMove(piece, squareX, squareY);
+                    case -4:
+                        return Move.validRookMove(piece, squareX, squareY);
+                    case -5:
+                        return Move.validQueenMove(piece, squareX, squareY);
+                    case -6:
+                        return Move.validBlackKingMove(piece, squareX, squareY);
+                }
+    return false
+}
+```
+
+What we do here is loop over every square on the board.
+If that square has a black piece on it then we check if that piece can legally move to the square provided.
+
+We have another function that does this for white pieces, but it is the inverse of the previous function, so I won't go over it.
+
+Next we have a function that checks if the white king is in checkmate:
+
+``` ts
+public static whiteKingInCheckMate(): boolean {
+    const king: Piece = Piece.getKing(true, Board.pieces);
+    if (!Check.squareBeingAttackedByBlackPiece(king.x, king.y, Board.pieces))
+        return false;
+    for (const array of Board.pieces) {
+        for (const piece of array) {
+            if (piece.value > 0) {
+                for (let i = 0; i < 8; i++) {
+                    for (let j = 0; j < 8; j++) {
+                        if (Piece.getValidMove(piece, j, i) && (Board.pieces[j][i].value <= 0)) {
+                            const pieceCopy: Piece = Functions.deepCopy(piece);
+                            const newBoard: Piece[][] = Functions.deepCopy(Board.pieces);
+                            newBoard[j][i] = pieceCopy;
+                            newBoard[pieceCopy.y][pieceCopy.x] = new Piece(0, pieceCopy.x, pieceCopy.y);
+                            pieceCopy.y = j;
+                            pieceCopy.x = i;
+                            const newKing: Piece = Piece.getKing(true, newBoard);
+                            if (!Check.squareBeingAttackedByBlackPiece(newKing.x, newKing.y, newBoard))
+                                return false
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+```
+
+First we get the white king and assign it to a variable.
+
+Then we check if the king is check.
+If he isn't, the we return `false`.
+Then we loop over all the squares.
+If we find a white piece, then we loop over all the squares again.
+If we can legally move to that square, then we create a deep copy of the board and move there.
+If the king is no longer in check, we return `false`.
+If all the white pieces can't do anything, we return `true`.
+
+The smae function is used for `blackKingInCheckMate` but inversed.
+
+### The Black File
+
+First off, we have these two functions:
+
+``` ts
+public static getNumberOfBlackPieces(): number {
+    let total: number = 0;
+    for (let array of Board.pieces)
+        for (let piece of array)
+            if (piece !== null)
+                if (piece.value < 0)
+                    total++;
+    return total;
+}
+
+public static getPromotion(piece: Piece, newY: number) {
+    if (newY === 7 && piece.value === -1) {
+        piece.value = 5;
+    }
+}
+```
+
+The first function simply returns the total number of black pieces.
+The second function promotes a pawn to a queen.
+
+Those two functions are quite simple, but now we get to the main function:
+
+``` ts
+public static makeMove(): void {
+    const blackPieces: number = Black.getNumberOfBlackPieces();
+    outer:
+    while (true) {
+        const pieceToPick: number = Functions.randomInteger(0, blackPieces - 1);
+        let index: number = 0;
+        let piecePick: Piece = new Piece(0, 0, 0);
+        fast:
+        for (const array of Board.pieces) {
+            for (const piece of array) {
+                if (index === pieceToPick) {
+                    piecePick = piece;
+                    break fast;
+                }
+                index++;
+            }
+        }
+        let xOffset: number;
+        let yOffset: number;
+        let counter: number = 0;
+        let king: Piece = Piece.getKing(false, Board.pieces);
+        while (true) {
+            if (Check.squareBeingAttackedByWhitePiece(king.x, king.y, Board.pieces)) {
+                for (const array of Board.pieces) {
+                    for (const piece of array) {
+                        if (piece.value < 0) {
+                            for (let i = 0; i < 8; i++) {
+                                for (let j = 0; j < 8; j++) {
+                                    if (Piece.getValidMove(piece, i, j) && (Board.pieces[j][i].value >= 0)) {
+                                        const pieceCopy: Piece = Functions.deepCopy(piece);
+                                        const newBoard: Piece[][] = Functions.deepCopy(Board.pieces);
+                                        newBoard[j][i] = pieceCopy;
+                                        newBoard[pieceCopy.y][pieceCopy.x] = new Piece(0, pieceCopy.x, pieceCopy.y);
+                                        pieceCopy.y = j;
+                                        pieceCopy.x = i;
+                                        const newKing: Piece = Piece.getKing(false, newBoard);
+                                        if (piece.value === -6) {
+                                            newKing.y = j;
+                                            newKing.x = i;
+                                        }
+                                        if (!Check.squareBeingAttackedByWhitePiece(newKing.x, newKing.y, newBoard)) {
+                                            Board.pieces[j][i] = piece;
+                                            Board.pieces[piece.y][piece.x] = new Piece(0, piece.x, piece.y);
+                                            piece.x = i;
+                                            piece.y = j;
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            counter++;
+            if (counter == 10)
+                continue outer;
+            xOffset = Functions.randomInteger(0, 8) - 4;
+            yOffset = Functions.randomInteger(0, 8) - 4;
+            if (piecePick.x + xOffset < 0 || piecePick.x + xOffset > 7 || piecePick.y + yOffset < 0 || piecePick.y + yOffset > 7)
+                continue;
+            if (Board.pieces[piecePick.y + yOffset][piecePick.x + xOffset].value < 0)
+                continue;
+            if (Piece.getValidMove(piecePick, piecePick.x + xOffset, piecePick.y + yOffset))
+                break;
+        }
+        let newBoard: Piece[][] = Functions.deepCopy(Board.pieces);
+        king = Functions.deepCopy(Piece.getKing(false, newBoard));
+        king.x += xOffset;
+        king.y += yOffset;
+        if (Check.squareBeingAttackedByWhitePiece(king.x, king.y, newBoard)) 
+            continue;
+        Board.pieces[piecePick.y + yOffset][piecePick.x + xOffset] = piecePick;
+        Board.pieces[piecePick.y][piecePick.x] = new Piece(0, piecePick.x, piecePick.y);
+        piecePick.x += xOffset;
+        piecePick.y += yOffset;
+        return;
+    }
+}
+```
+
+This long function is used to move a "random" piece.
+So first we get the number of black pieces.
+Then we make a `while` loop with a label of `outer`.
+We'll go over labels later.
+First we choose a random number between 0 and the number of black pieces minus one.
+We do that by calling this function:
+
+``` ts
+public static randomInteger(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+```
+
+I this function has a few built in `Math` functions:
+
+- `Math.floor()`
+  - Floor the value (1.55 to 1, 2.35435435 to 2)
+- `Math.random()`
+  - Return a "random" number between 0 and 1.
+
+We then do a complicated formula to get a value between two numbers.
+But that should be impossible.
+Think about it.
+Can computers generate random numbers?
+They really can't.
+Whenever you ask Siri "Generate a random number betweeen 0 and 50, she isn't giving you a *random* number, but rather a *psuedo-random* number.
+Psuedo-random numbers are generated using very complex formulas.
+Here is a simple example.
+
+In JavaScript, there is a function called `Date.now()` which returns a very large number.
+Right now it should be around this number: `1662857532730`.
+The is the amount of milliseconds that have elapsed since `January 1, 1970, 00:00:00`.
+This number is what your computer uses to calculate the current date.
+Now, this number is always changing.
+Every second it goes up by 1000.
+We can use this function in a formula to generate a "random" number.
+Another aspect of pseudo-random number generation is a seed (Like a world seed in Minecraft).
+Whenever you call `Math.random()`, you get a seed, and that seed is also used in the formula.
+[This](https://healeycodes.com/creating-randomness) article is a good read on this.
+
+From that website there is this function:
+
+``` js
+Math.random = (function () {
+  var seed = 49734321
+  return function () {
+    // Robert Jenkins' 32 bit integer hash function.
+    seed = seed & 0xffffffff
+    seed = (seed + 0x7ed55d16 + (seed << 12)) & 0xffffffff
+    seed = (seed ^ 0xc761c23c ^ (seed >>> 19)) & 0xffffffff
+    seed = (seed + 0x165667b1 + (seed << 5)) & 0xffffffff
+    seed = ((seed + 0xd3a2646c) ^ (seed << 9)) & 0xffffffff
+    seed = (seed + 0xfd7046c5 + (seed << 3)) & 0xffffffff
+    seed = (seed ^ 0xb55a4f09 ^ (seed >>> 16)) & 0xffffffff
+    return (seed & 0xfffffff) / 0x10000000
+  }
+})()
+```
+
+This has a seed and uses `bitwise operator`s to calculate a "random" number.
+
+Now if you've ever heard of binary (1's and 0's), it has to do with that.
+Each number can be represented as a binary expression.
+Here is 5 in binary: `00000101`
+From each number starting at the right you double the previous number:
+
+``` text
+00000000
+^^^^^^^^
+|||||||1
+||||||2
+|||||4
+||||8
+|||16
+||32
+|64
+128
+```
+
+So when you have `5 & 3`:
+
+```text
+00000101  5
+00000011  3
+```
+
+Here is the truth table for `&`:
+
+| a | b | a & b |
+|---|---|-------|
+| 0 | 0 | 0     |
+| 0 | 1 | 0     |
+| 1 | 0 | 0     |
+| 1 | 1 | 1     |
+
+So this is the output:
+
+``` text
+00000101  5 &
+00000011  3
+00000001
+```
+
+So this returns one.
+
+After this, we choose a piece.
+The `break fast` breaks out of the loop with a `label` called `fast`.
+Then we initialize a counter and king.
+First off, we check if the black king is check.
+Then we activate a sort of "danger" mode, where black will loop over all the pieces.
+As soon as he finds a valid move to get his king out of check, he will make it.
+If the king is not check, then we add one to the counter.
+Then if the counter is 10, we reset the program.
+This is so that if a piece cannot move anywhere it will not stay on that piece forever.
+Then we pick a random value between -4 and 4 twice.
+That number will be added on to the piece's `x` and `y` to move it.
+First, we check if the pieces `x` plus the random value (or `y`) is off the board.
+If it is, we use the `continue` keyword to continue from the start of the `while` loop.
+Then if the piece will move onto another black piece, we `continue`.
+Then, if the piece is making a valid move, we `break` out of the loop.
+After we are out of the loop, we copy the king and see if it moved to a square that is being attacked.
+If so we return.
 
 ---

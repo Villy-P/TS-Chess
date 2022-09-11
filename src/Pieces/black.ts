@@ -82,11 +82,13 @@ class Black {
                     break;
             }
             let newBoard: Piece[][] = Functions.deepCopy(Board.pieces);
-            king = Functions.deepCopy(Piece.getKing(false, newBoard));
-            king.x += xOffset;
-            king.y += yOffset;
-            if (Check.squareBeingAttackedByWhitePiece(king.x, king.y, newBoard)) 
-                continue;
+            if (piecePick.value === -6) {
+                king = Functions.deepCopy(Piece.getKing(false, newBoard));
+                king.x += xOffset;
+                king.y += yOffset;
+                if (Check.squareBeingAttackedByWhitePiece(king.x, king.y, newBoard)) 
+                    continue;
+            }
             Board.pieces[piecePick.y + yOffset][piecePick.x + xOffset] = piecePick;
             Board.pieces[piecePick.y][piecePick.x] = new Piece(0, piecePick.x, piecePick.y);
             piecePick.x += xOffset;
